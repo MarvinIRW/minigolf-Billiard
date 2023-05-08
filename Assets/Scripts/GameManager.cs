@@ -43,14 +43,14 @@ public class GameManager : MonoBehaviour
         if (gameOver && shotsTaken <= maxShots)
         {
             Debug.Log("You won!");
-            _UIManager.win();
+            _UIManager.Win();
             // Progress to the next level or show a victory screen
         }
         else if (shotsTaken >= maxShots)
         {
             Debug.Log("You lost!");
             gameOver = true;
-            _UIManager.gameOver();
+            _UIManager.GameOver();
             // Show a game over screen or restart the level
         }
     }

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private Slider shotStrengthSlider;
     [SerializeField] private Text shotsText;
     [SerializeField] private Text statusText;
 
@@ -15,18 +17,29 @@ public class UIManager : MonoBehaviour
         statusText.text = "";
     }
 
+    private void Update()
+    {
+        UpdateShotStrengthSlider();
+    }
+
     public void UpdateShotsText(int shots)
     {
         shotsText.text = $"Shots: {shots}";
     }
 
+    private void UpdateShotStrengthSlider()
+    {
+        float shotStrengthPercentage = (playerController.ShotStrength - playerController.MinShotStrength) / (playerController.MaxShotStrength - playerController.MinShotStrength);
+        shotStrengthSlider.value = playerController.ShotStrength;
+    }
+
     // DEFINE WIN & GAME OVER TEXT
-    public void gameOver()
+    public void GameOver()
     {
         statusText.text = "Game Over";
     }
 
-    public void win()
+    public void Win()
     {
         statusText.text = "You won :)";
     }
