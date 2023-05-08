@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+
+    [SerializeField] private UIManager _UIManager;
     [SerializeField] private int maxShots = 10;
 
     private int shotsTaken = 0;
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             shotsTaken++;
+            _UIManager.UpdateShotsText(shotsTaken);
             CheckGameStatus();
         }
     }
@@ -40,13 +43,20 @@ public class GameManager : MonoBehaviour
         if (gameOver && shotsTaken <= maxShots)
         {
             Debug.Log("You won!");
+            _UIManager.win();
             // Progress to the next level or show a victory screen
         }
         else if (shotsTaken >= maxShots)
         {
             Debug.Log("You lost!");
             gameOver = true;
+            _UIManager.gameOver();
             // Show a game over screen or restart the level
         }
+    }
+
+    public int getShotsTaken()
+    {
+        return shotsTaken;
     }
 }
