@@ -17,9 +17,10 @@ public class UIManager : MonoBehaviour
         statusText.text = "";
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         UpdateShotStrengthSlider();
+
     }
 
     public void UpdateShotsText(int shots)

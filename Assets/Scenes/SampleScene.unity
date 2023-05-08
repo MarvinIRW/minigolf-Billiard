@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &110303958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3056285649819907740, guid: a5b56d18c8c9f784083080db373f0c35, type: 3}
+  m_PrefabInstance: {fileID: 1758297691}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &110303959 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8209188235125013283, guid: a5b56d18c8c9f784083080db373f0c35, type: 3}
@@ -1248,6 +1253,11 @@ MonoBehaviour:
   maxShotStrength: 10
   minShotStrength: 1
   shotStrengthMultiplier: 3
+  eightBall: {fileID: 110303958}
+  cueBallCameraOffset: {x: 0, y: 0, z: 0}
+  fieldViewCameraPosition: {x: 0, y: 0, z: 0}
+  fieldViewCameraRotation: {x: 0, y: 0, z: 0, w: 0}
+  cameraTransitionSpeed: 2
 --- !u!4 &1330979085
 Transform:
   m_ObjectHideFlags: 0
