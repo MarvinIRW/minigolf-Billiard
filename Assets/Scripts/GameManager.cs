@@ -147,7 +147,7 @@ public class GameManager : MonoBehaviour
 
             // If we are in the transition phase and have reached the free camera's position, switch to free view
             if ((mainCamera.transform.position - freeViewCameraPosition).sqrMagnitude < 1f && // Increased from 0.01f
-    Quaternion.Angle(mainCamera.transform.rotation, freeViewCameraRotation) < 1f) // Increased from 0.1f
+                Quaternion.Angle(mainCamera.transform.rotation, freeViewCameraRotation) < 1f) // Increased from 0.1f
             {
                 cameraView = 2;
                 freeCameraController.enabled = true;
