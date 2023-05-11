@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // Only proceed if not in free view
-        if (gameManager.CameraView != 2)
+        if (gameManager.cameraState != GameManager.CameraState.FreeView)
         {
             // Aim the shot using the mouse position
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);

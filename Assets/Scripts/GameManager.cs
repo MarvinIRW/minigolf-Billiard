@@ -13,10 +13,18 @@ public class GameManager : MonoBehaviour
     private Quaternion fieldViewCameraRotation;
     private Vector3 freeViewCameraPosition;
     private Quaternion freeViewCameraRotation;
-
     [SerializeField] private float cameraTransitionSpeed = 2f;
-    private int cameraView = 0; // Flag for toggling camera view, 0 = Area view, 1 = cue ball viwe,  2 = free view, 3 = transition
     private FreeCameraController freeCameraController;
+    public enum CameraState
+    {
+        AreaView,
+        CueBallView,
+        FreeView,
+        Transition
+    }
+
+    public CameraState cameraState = CameraState.AreaView;
+
 
 
 
@@ -25,9 +33,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private int maxShots = 10;
     private bool gameOver = false; // Flag to indicate if the game is over
-
-    // getters
-    public int CameraView { get { return cameraView; } }
 
 
     public void Start()
@@ -40,6 +45,8 @@ public class GameManager : MonoBehaviour
         // Ensure FreeCameraController is not active at the start
         freeCameraController = mainCamera.GetComponent<FreeCameraController>();
         freeCameraController.enabled = false;
+        freeViewCameraPosition = mainCamera.transform.position;
+        freeViewCameraRotation = mainCamera.transform.rotation;
     }
 
     private void Update()
@@ -53,13 +60,13 @@ public class GameManager : MonoBehaviour
         CheckGameStatus();
 
         // Camera update
-        if (Input.GetKeyDown(KeyCode.C)) // If C key is pressed, toggle camera view
+        if (Input.GetKeyDown(KeyCode.C)) // If C key is pressed, change camera state
         {
-            ToggleCameraView();
+            ChangeCameraState();
         }
 
-        // Update camera's position based on the current view (field or cue ball)
-        UpdateCameraPosition();
+        // Update camera's position based on the current state
+        UpdateCameraState();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -95,66 +102,72 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ToggleCameraView()
+    private void ChangeCameraState()
     {
-        if (cameraView == 0)
+        switch (cameraState)
         {
-            cameraView = 1;
-            freeCameraController.enabled = false;
-        }
-        else if (cameraView == 1)
-        {
-            // When switching to free view, first go to the transition phase
-            cameraView = 3;
-            freeCameraController.enabled = false;
-        }
-        else if (cameraView == 2)
-        {
-            // When switching away from free view, store the current position of the free camera
-            freeViewCameraPosition = mainCamera.transform.position;
-            freeViewCameraRotation = mainCamera.transform.rotation;
+            case CameraState.AreaView:
+                cameraState = CameraState.CueBallView;
+                freeCameraController.enabled = false;
+                break;
+            case CameraState.CueBallView:
+                StartCoroutine(TransitionToFreeView());
+                break;
+            case CameraState.FreeView:
+                // When switching away from free view, store the current position of the free camera
+                freeViewCameraPosition = mainCamera.transform.position;
+                freeViewCameraRotation = mainCamera.transform.rotation;
 
-            cameraView = 0;
-            freeCameraController.enabled = false;
+                cameraState = CameraState.AreaView;
+                freeCameraController.enabled = false;
+                break;
         }
     }
 
-    private void UpdateCameraPosition()
+    private IEnumerator TransitionToFreeView()
+    {
+        cameraState = CameraState.Transition; // transition phase
+        freeCameraController.enabled = false;
+
+        Vector3 targetPosition = freeViewCameraPosition;
+        Quaternion targetRotation = freeViewCameraRotation;
+
+
+        while ((mainCamera.transform.position - targetPosition).sqrMagnitude > 0.01f ||
+                Quaternion.Angle(mainCamera.transform.rotation, targetRotation) > 0.1f)
+        {
+            mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, cameraTransitionSpeed * Time.deltaTime);
+            mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, targetRotation, cameraTransitionSpeed * Time.deltaTime);
+            Debug.Log((mainCamera.transform.position - targetPosition).sqrMagnitude);
+            Debug.Log((Quaternion.Angle(mainCamera.transform.rotation, targetRotation)));
+            yield return null;
+        }
+
+        cameraState = CameraState.FreeView; // free view
+        freeCameraController.enabled = true;
+    }
+
+
+    private void UpdateCameraState()
     {
         Vector3 targetPosition = Vector3.zero;
         Quaternion targetRotation = Quaternion.identity;
 
-        if (cameraView == 0) // area view
+        switch (cameraState)
         {
-            targetPosition = fieldViewCameraPosition;
-            targetRotation = fieldViewCameraRotation;
-        }
-        else if (cameraView == 1) // cueball view
-        {
-            Vector3 cueBallToEightBallDirection = (eightBall.transform.position - cueBallController.transform.position).normalized;
-            targetPosition = cueBallController.transform.position - cueBallToEightBallDirection * cueBallCameraOffset.magnitude;
-            targetRotation = Quaternion.LookRotation(cueBallToEightBallDirection, Vector3.up);
-        }
-        else if (cameraView == 2) // free view
-        {
-            return; // In free view, we do nothing and let the FreeCameraController handle everything.
-        }
-        else if (cameraView == 3) // transition phase
-        {
-            // In the transition phase, interpolate towards the target position and then exit.
-            targetPosition = freeViewCameraPosition;
-            targetRotation = freeViewCameraRotation;
-
-            // If we are in the transition phase and have reached the free camera's position, switch to free view
-            if ((mainCamera.transform.position - freeViewCameraPosition).sqrMagnitude < 1f && // Increased from 0.01f
-                Quaternion.Angle(mainCamera.transform.rotation, freeViewCameraRotation) < 1f) // Increased from 0.1f
-            {
-                cameraView = 2;
-                freeCameraController.enabled = true;
-            }
-
-            Debug.Log("transition phase");
-
+            case CameraState.AreaView:
+                targetPosition = fieldViewCameraPosition;
+                targetRotation = fieldViewCameraRotation;
+                break;
+            case CameraState.CueBallView:
+                Vector3 cueBallToEightBallDirection = (eightBall.transform.position - cueBallController.transform.position).normalized;
+                targetPosition = cueBallController.transform.position - cueBallToEightBallDirection * cueBallCameraOffset.magnitude;
+                targetRotation = Quaternion.LookRotation(cueBallToEightBallDirection, Vector3.up);
+                break;
+            case CameraState.FreeView:
+                return; // In free view, we do nothing and let the FreeCameraController handle everything.
+            case CameraState.Transition:
+                return;
         }
 
         // Interpolate from the current position/rotation
