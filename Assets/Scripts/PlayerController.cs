@@ -4,96 +4,72 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public CueBallController cueBallController;
+    [SerializeField] private CueBallController cueBallController;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private float maxShotStrength = 10f;
-    [SerializeField] private float minShotStrength = 1f;
-    [SerializeField] private float shotStrengthMultiplier = 3f;
+    [SerializeField] private GameManager gameManager;
+    private float maxShotStrength = 20f;
+    private float minShotStrength = 1f;
+    private float shotStrengthMultiplier = 0.5f;
+    private float shotStrengthDirection = 1f;
     private float mouseDownTime;
     private float shotStrength = 0;
+    private int shotsTaken = 0;
 
-
-    //needed for camera switch
-    [SerializeField] private GameObject eightBall;
-    [SerializeField] private Vector3 cueBallCameraOffset = new Vector3(0, 5, -5);
-    [SerializeField] private Vector3 fieldViewCameraPosition;
-    [SerializeField] private Quaternion fieldViewCameraRotation;
-    [SerializeField] private float cameraTransitionSpeed = 2f;
-    private bool isFieldView = true;
-
+    // Properties for other scripts to access variables
     public float ShotStrength { get { return shotStrength; } }
     public float MinShotStrength { get { return minShotStrength; } }
     public float MaxShotStrength { get { return maxShotStrength; } }
+    public int ShotsTaken { get { return shotsTaken; } }
+    public CueBallController CueBallController { get { return cueBallController; } }
+    public Camera MainCamera { get { return mainCamera; } }
 
-    public void Start()
-    {
-        fieldViewCameraPosition = mainCamera.transform.position;
-        fieldViewCameraRotation = mainCamera.transform.rotation;
-    }
     private void Update()
     {
-        // Aim the shot using the mouse position
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        // Only proceed if not in free view
+        if (gameManager.CameraView != 2)
         {
-            Vector3 aimDirection = (hit.point - cueBallController.transform.position).normalized;
-
-            //get first downpress
-            if (Input.GetMouseButtonDown(0))
+            // Aim the shot using the mouse position
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
             {
-                mouseDownTime = Time.time;
+                Vector3 aimDirection = (hit.point - cueBallController.transform.position).normalized;
+
+                // Check if the cue ball is stationary otherwise no shot possible
+                if (cueBallController.IsStationary())
+                {
+                    // On mouse down, start measuring the shot strength
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        mouseDownTime = Time.time;
+                        shotStrength = 0f;
+                    }
+                    // While mouse button is held down, calculate the shot strength based on time
+                    if (Input.GetMouseButton(0))
+                    {
+                        float pressDuration = (Time.time - mouseDownTime);
+                        //float shotStrengthNormalized = Mathf.Clamp01(pressDuration * shotStrengthMultiplier);
+                        //shotStrength = minShotStrength + Mathf.Pow(shotStrengthNormalized, 2) * (maxShotStrength - minShotStrength);
+
+                        float shotStrengthChange = pressDuration * shotStrengthMultiplier * shotStrengthDirection;
+                        shotStrength = Mathf.Clamp(shotStrength + shotStrengthChange, minShotStrength, maxShotStrength);
+
+                        // Flip the direction if we hit the minimum or maximum shot strength
+                        if (shotStrength >= maxShotStrength && shotStrengthDirection > 0 || shotStrength <= minShotStrength && shotStrengthDirection < 0)
+                        {
+                            shotStrengthDirection *= -1f;
+                            mouseDownTime = Time.time;
+                        }
+                    }
+                    // On mouse up, shoot the cue ball and increment shots taken counter
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        cueBallController.Shoot(aimDirection * shotStrength);
+                        shotsTaken++;
+                    }
+                }
             }
-            // while its pressed (needed for the ui Slider)
-            if (Input.GetMouseButton(0))
-            {
-                float pressDuration = (Time.time - mouseDownTime) + 1;
-                shotStrength = Mathf.Clamp(pressDuration * shotStrengthMultiplier, minShotStrength, maxShotStrength);         
-            }
-            // when released
-            if (Input.GetMouseButtonUp(0))
-            {
-                cueBallController.Shoot(aimDirection * shotStrength);
-                shotStrength = 0f;
-            }
-
         }
-
-        // camera update
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            ToggleCameraView();
-        }
-
-        UpdateCameraPosition();
-
     }
-    //camera functions
-    private void ToggleCameraView()
-    {
-        isFieldView = !isFieldView;
-    }
-    private void UpdateCameraPosition()
-    {
-        Vector3 targetPosition;
-        Quaternion targetRotation;
-
-        if (isFieldView)
-        {
-            targetPosition = fieldViewCameraPosition;
-            targetRotation = fieldViewCameraRotation;
-        }
-        else
-        {
-            Vector3 cueBallToEightBallDirection = (eightBall.transform.position - cueBallController.transform.position).normalized;
-            targetPosition = cueBallController.transform.position - cueBallToEightBallDirection * cueBallCameraOffset.magnitude;
-            targetRotation = Quaternion.LookRotation(cueBallToEightBallDirection, Vector3.up);
-        }
-
-        mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, cameraTransitionSpeed * Time.deltaTime);
-        mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, targetRotation, cameraTransitionSpeed * Time.deltaTime);
-    }
-
-
-
+        
 }
