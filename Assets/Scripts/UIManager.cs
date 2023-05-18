@@ -57,6 +57,8 @@ public class UIManager : MonoBehaviour
         shotStrengthSlider.value = playerController.ShotStrength;
     }
 
+
+
     // Updates the status text to Game Over when the game is lost
     public void GameOver()
     {

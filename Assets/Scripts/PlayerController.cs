@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public int ShotsTaken { get { return shotsTaken; } }
     public CueBallController CueBallController { get { return cueBallController; } }
     public Camera MainCamera { get { return mainCamera; } }
+    public bool IsAimingLineEnabled { get; set; } = true;
+
 
     private void Update()
     {
@@ -48,10 +51,16 @@ public class PlayerController : MonoBehaviour
             return;
         }
         UpdateAimingLine(hit.point);
-        // Only proceed if not in free view
+        /*// Only proceed if not in free view
         if (gameManager.cameraState == GameManager.CameraState.FreeView)
         {
-            Debug.Log("freecam");
+            Debug.Log("freecam or over UI");
+            return;
+        }*/
+        // Only proceed if not over UI
+        if (IsPointerOverUIButton())
+        {
+            Debug.Log("over UI");
             return;
         }
         // Aim the shot using the mouse position
@@ -79,6 +88,8 @@ public class PlayerController : MonoBehaviour
                 mouseDownTime = Time.time;
             }
         }
+
+
         // On mouse up, shoot the cue ball and increment shots taken counter
         if (Input.GetMouseButtonUp(0))
         {
@@ -87,21 +98,94 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
-
-    //daws the aiming line if aming
-    private void UpdateAimingLine(Vector3? worldpoint)
+    //daws the aiming line if aming //fuck this thing..
+    private void UpdateAimingLine(Vector3? worldPoint)
     {
-        if (worldpoint == null)
+        if (worldPoint == null || !IsAimingLineEnabled)
         {
+            // If no point to aim at or if the aiming line is disabled, disable the line renderer
             lineRenderer.enabled = false;
         }
         else
         {
-            Vector3[] positions ={cueBallController.transform.position, (Vector3)worldpoint };
-            lineRenderer.SetPositions(positions);
+            Vector3 startPosition = cueBallController.transform.position;
+            // Calculate direction from the start position (cue ball) to the aim point
+            Vector3 direction = ((Vector3)worldPoint - startPosition).normalized;
+            Vector3 reflectedDirection = direction;
+            Vector3 currentPosition = startPosition;
+            Vector3 endPosition = currentPosition;
+
+            List<Vector3> positions = new List<Vector3>();
+            positions.Add(startPosition);
+
+            float totalRaycastLength = 20; // Max length of all raycasts combined
+
+            for (int i = 0; i < 10; i++) // Limit to 10 reflections for performance reasons
+            {
+                // Cast ray from current position in the reflected direction, up to the remaining length of totalRaycastLength
+                Ray ray = new Ray(currentPosition, reflectedDirection);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, totalRaycastLength))
+                {
+                    // Check if the raycast hit an object tagged as "GameEnvironment"
+                    if (hit.collider.CompareTag("GameEnvironment"))
+                    {
+                        endPosition = hit.point;
+                        reflectedDirection = Vector3.Reflect(reflectedDirection, hit.normal);
+                        totalRaycastLength -= hit.distance; // Subtract the distance traveled from the total
+
+                        // Cast a ray downwards to check for the ground and its tag
+                        RaycastHit groundHit;
+                        if (Physics.Raycast(endPosition, Vector3.down, out groundHit) && groundHit.collider.CompareTag("Ground"))
+                        {
+                            float groundHeight = groundHit.point.y;
+                            // Only allow line position if it's within a certain range from the ground
+                            if (Mathf.Abs(endPosition.y - groundHeight) < 2f)
+                            {
+                                positions.Add(endPosition);
+                            }
+                        }
+                    }
+                    // This will handle the case of the ray hitting the eightball, hole or ground directly
+                    else if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("EightBall") || hit.collider.CompareTag("Hole"))
+                    {
+                        endPosition = hit.point;
+                        positions.Add(endPosition);
+                        break;
+                    }
+                }
+                else
+                {
+                    // If the raycast did not hit, extend line by the remaining length
+                    endPosition = currentPosition + reflectedDirection * totalRaycastLength;
+                    totalRaycastLength = 0; // Set the remaining length to 0
+                }
+
+                currentPosition = endPosition;
+
+                // If all the length has been used, stop looping
+                if (totalRaycastLength <= 0)
+                    break;
+            }
+
+            lineRenderer.positionCount = positions.Count;
+            lineRenderer.SetPositions(positions.ToArray());
             lineRenderer.enabled = true;
         }
     }
+
+
+    // checking if mouse if over stuff that could be clicked
+    private bool IsPointerOverUIButton()
+    {
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+
+        return results.Exists(result => result.gameObject.CompareTag("UIBlocking"));
+    }
+
 
 }

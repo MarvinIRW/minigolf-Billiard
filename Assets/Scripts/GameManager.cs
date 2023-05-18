@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     private Quaternion fieldViewCameraRotation;
     private Vector3 freeViewCameraPosition;
     private Quaternion freeViewCameraRotation;
-    [SerializeField] private float cameraTransitionSpeed = 2f;
+    [SerializeField] private float cameraTransitionSpeed = 5f;
     private FreeCameraController freeCameraController;
     public enum CameraState
     {
@@ -174,5 +174,7 @@ public class GameManager : MonoBehaviour
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, cameraTransitionSpeed * Time.deltaTime);
         mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, targetRotation, cameraTransitionSpeed * Time.deltaTime);
     }
+
+
 
 }

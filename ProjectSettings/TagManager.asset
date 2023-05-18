@@ -6,6 +6,9 @@ TagManager:
   tags:
   - EightBall
   - Hole
+  - UIBlocking
+  - Ground
+  - GameEnvironment
   layers:
   - Default
   - TransparentFX
