@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         if (worldpoint == null)
         {
-            //lineRenderer.enabled = false;
+            lineRenderer.enabled = false;
         }
         else
         {
