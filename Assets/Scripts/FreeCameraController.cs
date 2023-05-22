@@ -7,10 +7,10 @@ using UnityEngine;
 /// 
 /// Keys:
 ///	wasd / arrows	- movement
-///	q/e 			- up/down (local space)
+///	space/leftshift			- up/down (local space)
 ///	r/f 			- up/down (world space)
 ///	pageup/pagedown	- up/down (world space)
-///	hold shift		- enable fast movement mode
+///	hold rightshift		- enable fast movement mode
 ///	right mouse  	- enable free look
 ///	mouse			- free look / rotation
 ///     
@@ -47,7 +47,7 @@ public class FreeCameraController : MonoBehaviour
     private bool looking = false;
     void Update()
     {
-        var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        var fastMode = Input.GetKey(KeyCode.RightShift);
         var movementSpeed = fastMode ? this.fastMovementSpeed : this.movementSpeed;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
@@ -70,12 +70,12 @@ public class FreeCameraController : MonoBehaviour
             transform.position = transform.position + (-transform.forward * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.Space))
         {
             transform.position = transform.position + (transform.up * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             transform.position = transform.position + (-transform.up * movementSpeed * Time.deltaTime);
         }

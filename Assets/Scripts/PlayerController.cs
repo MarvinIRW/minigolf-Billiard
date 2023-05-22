@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     //aiming line
     [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private int aimingLineLength = 20;
 
     // Properties for other scripts to access variables
     public float ShotStrength { get { return shotStrength; } }
@@ -34,7 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         //prevent nested if statements
         // Check if the cue ball is stationary otherwise no shot
-        if (!cueBallController.IsStationary())
+        if (ballManager.IsAnyMovement())
         {
             // if balls moving dont show aiming line
             UpdateAimingLine(null);
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
         }
         // Aim the shot using the mouse position
         Vector3 aimDirection = (hit.point - cueBallController.transform.position).normalized;
+        aimDirection.y = 0;  // Make sure Y direction is always 0
         // On mouse down, start measuring the shot strength
         if (Input.GetMouseButtonDown(0))
         {
@@ -110,6 +112,7 @@ public class PlayerController : MonoBehaviour
             Vector3 startPosition = cueBallController.transform.position;
             // Calculate direction from the start position (cue ball) to the aim point
             Vector3 direction = ((Vector3)worldPoint - startPosition).normalized;
+            direction.y = 0; // Make sure Y direction is always 0
             Vector3 reflectedDirection = direction;
             Vector3 currentPosition = startPosition;
             Vector3 endPosition = currentPosition;
@@ -117,7 +120,7 @@ public class PlayerController : MonoBehaviour
             List<Vector3> positions = new List<Vector3>();
             positions.Add(startPosition);
 
-            float totalRaycastLength = 20; // Max length of all raycasts combined
+            float totalRaycastLength = aimingLineLength; // Max length of all raycasts combined
 
             for (int i = 0; i < 10; i++) // Limit to 10 reflections for performance reasons
             {
@@ -131,22 +134,13 @@ public class PlayerController : MonoBehaviour
                     {
                         endPosition = hit.point;
                         reflectedDirection = Vector3.Reflect(reflectedDirection, hit.normal);
+                        reflectedDirection.y = 0; // Ensure the reflected direction remains horizontal
                         totalRaycastLength -= hit.distance; // Subtract the distance traveled from the total
-                        // Cast a ray downwards to check for the ground and its tag
-                        RaycastHit groundHit;
-                        if (Physics.Raycast(endPosition, Vector3.down, out groundHit) && groundHit.collider.CompareTag("Ground"))
-                        {
-                            float groundHeight = groundHit.point.y;
-                            // Only allow line position if it's within a certain range from the ground
-                            if (Mathf.Abs(endPosition.y - groundHeight) < 2f)
-                            {
-                                positions.Add(endPosition);
-                            }
-                        }
+                        positions.Add(endPosition);
                     }
-                    // This will handle the case of the ray hitting the eightball, hole or ground directly
-                    else if (hit.collider.CompareTag("Ground") || hit.collider.CompareTag("EightBall") || hit.collider.CompareTag("Hole"))
+                    else
                     {
+                        // Handle case of hitting non-"GameEnvironment" objects
                         endPosition = hit.point;
                         positions.Add(endPosition);
                         break;
@@ -156,6 +150,7 @@ public class PlayerController : MonoBehaviour
                 {
                     // If the raycast did not hit, extend line by the remaining length
                     endPosition = currentPosition + reflectedDirection * totalRaycastLength;
+                    positions.Add(endPosition);
                     totalRaycastLength = 0; // Set the remaining length to 0
                 }
                 currentPosition = endPosition;
@@ -168,6 +163,7 @@ public class PlayerController : MonoBehaviour
             lineRenderer.enabled = true;
         }
     }
+
     // checking if mouse if over stuff that could be clicked
     private bool IsPointerOverUIButton()
     {
