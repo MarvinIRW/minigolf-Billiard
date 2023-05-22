@@ -32,7 +32,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //prevent nested if statements
-        
         // Check if the cue ball is stationary otherwise no shot
         if (!cueBallController.IsStationary())
         {
@@ -88,8 +87,6 @@ public class PlayerController : MonoBehaviour
                 mouseDownTime = Time.time;
             }
         }
-
-
         // On mouse up, shoot the cue ball and increment shots taken counter
         if (Input.GetMouseButtonUp(0))
         {
@@ -97,7 +94,6 @@ public class PlayerController : MonoBehaviour
             shotsTaken++;
         }
     }
-
     //daws the aiming line if aming //fuck this thing..
     private void UpdateAimingLine(Vector3? worldPoint)
     {
@@ -133,7 +129,6 @@ public class PlayerController : MonoBehaviour
                         endPosition = hit.point;
                         reflectedDirection = Vector3.Reflect(reflectedDirection, hit.normal);
                         totalRaycastLength -= hit.distance; // Subtract the distance traveled from the total
-
                         // Cast a ray downwards to check for the ground and its tag
                         RaycastHit groundHit;
                         if (Physics.Raycast(endPosition, Vector3.down, out groundHit) && groundHit.collider.CompareTag("Ground"))
@@ -160,21 +155,16 @@ public class PlayerController : MonoBehaviour
                     endPosition = currentPosition + reflectedDirection * totalRaycastLength;
                     totalRaycastLength = 0; // Set the remaining length to 0
                 }
-
                 currentPosition = endPosition;
-
                 // If all the length has been used, stop looping
                 if (totalRaycastLength <= 0)
                     break;
             }
-
             lineRenderer.positionCount = positions.Count;
             lineRenderer.SetPositions(positions.ToArray());
             lineRenderer.enabled = true;
         }
     }
-
-
     // checking if mouse if over stuff that could be clicked
     private bool IsPointerOverUIButton()
     {
@@ -186,6 +176,4 @@ public class PlayerController : MonoBehaviour
 
         return results.Exists(result => result.gameObject.CompareTag("UIBlocking"));
     }
-
-
 }

@@ -15,12 +15,9 @@ public class AimButtonColor : MonoBehaviour
         buttonText.text = "Aiming Line";  // Setting the button text
         UpdateButton();
     }
-
     // This method updates the button's color and text based on whether the aiming line is enable
     private void UpdateButton()
     {
-        
-
         // Check if aiming line is enabled and change the color accordingly
         if (playerController.IsAimingLineEnabled)
         {
@@ -31,7 +28,6 @@ public class AimButtonColor : MonoBehaviour
             button.image.color = inactiveColor;
         }
     }
-
     // This method is called when the button is clicked
     public void OnClick()
     {

@@ -41,15 +41,10 @@ public class FreeCameraController : MonoBehaviour
     /// Amount to zoom the camera when using the mouse wheel (fast mode).
     /// </summary>
     public float fastZoomSensitivity = 50f;
-
     /// <summary>
     /// Set to true when free looking (on right mouse button).
     /// </summary>
     private bool looking = false;
-
-    
-
-
     void Update()
     {
         var fastMode = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);

@@ -22,19 +22,12 @@ public class GameManager : MonoBehaviour
         FreeView,
         Transition
     }
-
     public CameraState cameraState = CameraState.AreaView;
-
-
-
-
     // Variables for game management
     [SerializeField] private UIManager _UIManager;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private int maxShots = 10;
     private bool gameOver = false; // Flag to indicate if the game is over
-
-
     public void Start()
     {
         cueBallController = playerController.CueBallController;
@@ -48,7 +41,6 @@ public class GameManager : MonoBehaviour
         freeViewCameraPosition = mainCamera.transform.position;
         freeViewCameraRotation = mainCamera.transform.rotation;
     }
-
     private void Update()
     {
         if (gameOver) return; // If game is over, do not proceed further
@@ -68,7 +60,6 @@ public class GameManager : MonoBehaviour
         // Update camera's position based on the current state
         UpdateCameraState();
     }
-
     private void OnTriggerEnter(Collider other)
     {
         // If EightBall falls into the hole, the game is over
@@ -77,14 +68,12 @@ public class GameManager : MonoBehaviour
             EightBallInHole();
         }
     }
-
     private void EightBallInHole()
     {
         Debug.Log("Eight-ball in the hole!");
         gameOver = true;
         CheckGameStatus();
     }
-
     private void CheckGameStatus()
     {
         // If the game is over and player has taken less or equal shots than maxShots, player wins
@@ -101,7 +90,6 @@ public class GameManager : MonoBehaviour
             _UIManager.GameOver(); // Display game over text
         }
     }
-
     private void ChangeCameraState()
     {
         switch (cameraState)
@@ -123,7 +111,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-
     private IEnumerator TransitionToFreeView()
     {
         cameraState = CameraState.Transition; // transition phase
@@ -142,12 +129,9 @@ public class GameManager : MonoBehaviour
             Debug.Log((Quaternion.Angle(mainCamera.transform.rotation, targetRotation)));
             yield return null;
         }
-
         cameraState = CameraState.FreeView; // free view
         freeCameraController.enabled = true;
     }
-
-
     private void UpdateCameraState()
     {
         Vector3 targetPosition = Vector3.zero;
@@ -174,7 +158,4 @@ public class GameManager : MonoBehaviour
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, cameraTransitionSpeed * Time.deltaTime);
         mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, targetRotation, cameraTransitionSpeed * Time.deltaTime);
     }
-
-
-
 }

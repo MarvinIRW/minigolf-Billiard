@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -11317291861277120}
   m_Layer: 0
   m_Name: EightBall
-  m_TagString: Untagged
+  m_TagString: EightBall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -7,7 +7,6 @@ public class BallManager : MonoBehaviour
     [SerializeField] private float minSpeedToStop = 0.05f;
 
     private List<Rigidbody> ballRigidbodies;
-
     // Initialize ballRigidbodies list with Rigidbody components of all children objects
     void Start()
     {
@@ -21,7 +20,6 @@ public class BallManager : MonoBehaviour
             }
         }
     }
-
     // Call StopBallIfSlow() for each ball on every frame
     void Update()
     {
@@ -30,7 +28,6 @@ public class BallManager : MonoBehaviour
             StopBallIfSlow(rb);
         }
     }
-
     // If a ball's speed is lower than minSpeedToStop, set its velocity and angular velocity to zero, effectively stopping it
     private void StopBallIfSlow(Rigidbody rb)
     {
@@ -40,7 +37,6 @@ public class BallManager : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
     }
-
     // checks if there is movement
     public bool IsAnyMovement()
     {
@@ -53,5 +49,4 @@ public class BallManager : MonoBehaviour
         }
         return false;
     }
-
 }

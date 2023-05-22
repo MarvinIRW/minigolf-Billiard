@@ -7,21 +7,18 @@ public class CueBallController : MonoBehaviour
     private Rigidbody cueBallRigidbody;
     [SerializeField] private AudioClip hitSound;
     private AudioSource audioSource;
-
     // Initialize Rigidbody and AudioSource
     private void Start()
     {
         cueBallRigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
     }
-
     // Apply force to the cue ball and play hit sound
     public void Shoot(Vector3 force)
     {
         cueBallRigidbody.AddForce(force, ForceMode.Impulse);
         audioSource.PlayOneShot(hitSound);
     }
-
     // Play hit sound when the cue ball hits the eight ball
     private void OnCollisionEnter(Collision collision)
     {
@@ -30,7 +27,6 @@ public class CueBallController : MonoBehaviour
             audioSource.PlayOneShot(hitSound);
         }
     }
-
     // Check if the cue ball is stationary
     public bool IsStationary()
     {
