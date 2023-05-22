@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private int maxShots = 10;
     private bool gameOver = false; // Flag to indicate if the game is over
+    // for out of bounds checks
+    [SerializeField] BallManager ballManager;
     public void Start()
     {
         cueBallController = playerController.CueBallController;
@@ -59,6 +61,9 @@ public class GameManager : MonoBehaviour
 
         // Update camera's position based on the current state
         UpdateCameraState();
+
+        // Check if any ball is out of bounds and resets it 
+        ballManager.CheckBallsOutBounds();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -90,6 +95,11 @@ public class GameManager : MonoBehaviour
             _UIManager.GameOver(); // Display game over text
         }
     }
+
+
+
+
+    // camera stuff
     private void ChangeCameraState()
     {
         switch (cameraState)

@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CueBallController cueBallController;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private BallManager ballManager;
     private float maxShotStrength = 20f;
     private float minShotStrength = 1f;
     private float shotStrengthMultiplier = 0.5f;
@@ -67,6 +68,8 @@ public class PlayerController : MonoBehaviour
         // On mouse down, start measuring the shot strength
         if (Input.GetMouseButtonDown(0))
         {
+            // save balls positions for resetting
+            ballManager.StoreInitialState();
             mouseDownTime = Time.time;
             shotStrength = 0f;
         }
