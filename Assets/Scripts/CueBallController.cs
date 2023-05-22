@@ -5,6 +5,7 @@ using UnityEngine;
 public class CueBallController : MonoBehaviour
 {
     private Rigidbody cueBallRigidbody;
+    public Rigidbody CueBallRigidbody { get { return cueBallRigidbody; } }
     [SerializeField] private AudioClip hitSound;
     private AudioSource audioSource;
     // Initialize Rigidbody and AudioSource

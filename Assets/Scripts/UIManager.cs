@@ -58,7 +58,7 @@ public class UIManager : MonoBehaviour
     // update game camera text
     public void UpdateCameraPositionText()
     {
-        switch (gameManager.cameraState)
+        switch (gameManager._CameraState)
         {
             case GameManager.CameraState.AreaView:
                 cameraPositionText.text = "Camera Pos.: Area";
@@ -77,6 +77,19 @@ public class UIManager : MonoBehaviour
                 break;
         }
     }
+    // next level is reached
+    public void NextLevel(int shotsTaken)
+    {
+        if (shotsTaken == 1)
+        {
+            statusText.text = "Amazing Job, you took only one shot!";
+        }
+        else
+        {
+            statusText.text = $"Nice Job, you took {shotsTaken} shots!";
+        }
+    }
+
     // Updates the status text to Game Over when the game is lost
     public void GameOver()
     {

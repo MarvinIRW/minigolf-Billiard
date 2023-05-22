@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
     private Quaternion freeViewCameraRotation;
     [SerializeField] private float cameraTransitionSpeed = 5f;
     private FreeCameraController freeCameraController;
+    private FollowCueBallCamera followCueBallCamera;
     public enum CameraState
     {
         AreaView,
@@ -22,14 +24,17 @@ public class GameManager : MonoBehaviour
         FreeView,
         Transition
     }
-    public CameraState cameraState = CameraState.AreaView;
+    private CameraState cameraState = CameraState.AreaView;
+    public CameraState _CameraState { get { return cameraState; } }
     // Variables for game management
     [SerializeField] private UIManager _UIManager;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private int maxShots = 10;
     private bool gameOver = false; // Flag to indicate if the game is over
+    [SerializeField] private string nextLevelSceneName; //name of the next level to be loaded
     // for out of bounds checks
     [SerializeField] BallManager ballManager;
+
     public void Start()
     {
         cueBallController = playerController.CueBallController;
@@ -42,6 +47,9 @@ public class GameManager : MonoBehaviour
         freeCameraController.enabled = false;
         freeViewCameraPosition = mainCamera.transform.position;
         freeViewCameraRotation = mainCamera.transform.rotation;
+
+        followCueBallCamera = mainCamera.GetComponent<FollowCueBallCamera>();
+        followCueBallCamera.enabled = true;
     }
     private void Update()
     {
@@ -85,7 +93,11 @@ public class GameManager : MonoBehaviour
         if (gameOver && playerController.ShotsTaken <= maxShots)
         {
             Debug.Log("You won!");
-            _UIManager.Win(); // Display win text
+            //_UIManager.Win(); // Display win text
+
+            //maybe if condition to play only this level for later
+            _UIManager.NextLevel(playerController.ShotsTaken);
+            Invoke("LoadNextLevel", 4);  // Load next level in 4 sec
         }
         // If player has taken more than maxShots, player loses
         else if (playerController.ShotsTaken >= maxShots)
@@ -95,7 +107,12 @@ public class GameManager : MonoBehaviour
             _UIManager.GameOver(); // Display game over text
         }
     }
-
+    // Method to load next level
+    private void LoadNextLevel()
+    {
+        // Load the next scene using SceneManager
+        SceneManager.LoadScene(nextLevelSceneName);
+    }
 
 
 
@@ -105,43 +122,54 @@ public class GameManager : MonoBehaviour
         switch (cameraState)
         {
             case CameraState.AreaView:
+                fieldViewCameraPosition = mainCamera.transform.position;
+                fieldViewCameraRotation = mainCamera.transform.rotation;
                 cameraState = CameraState.CueBallView;
+                followCueBallCamera.enabled = false;
                 freeCameraController.enabled = false;
                 break;
             case CameraState.CueBallView:
-                StartCoroutine(TransitionToFreeView());
+                cameraState = CameraState.Transition;
+                StartCoroutine(TransitionToCameraState(CameraState.FreeView, freeViewCameraPosition, freeViewCameraRotation));
                 break;
             case CameraState.FreeView:
                 // When switching away from free view, store the current position of the free camera
                 freeViewCameraPosition = mainCamera.transform.position;
                 freeViewCameraRotation = mainCamera.transform.rotation;
 
-                cameraState = CameraState.AreaView;
-                freeCameraController.enabled = false;
+                cameraState = CameraState.Transition;
+                StartCoroutine(TransitionToCameraState(CameraState.AreaView, fieldViewCameraPosition, fieldViewCameraRotation));
                 break;
         }
     }
-    private IEnumerator TransitionToFreeView()
+    private IEnumerator TransitionToCameraState(CameraState nextState, Vector3 targetPosition, Quaternion targetRotation)
     {
-        cameraState = CameraState.Transition; // transition phase
         freeCameraController.enabled = false;
-
-        Vector3 targetPosition = freeViewCameraPosition;
-        Quaternion targetRotation = freeViewCameraRotation;
-
+        followCueBallCamera.enabled = false;
 
         while ((mainCamera.transform.position - targetPosition).sqrMagnitude > 0.01f ||
                 Quaternion.Angle(mainCamera.transform.rotation, targetRotation) > 0.1f)
         {
             mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, targetPosition, cameraTransitionSpeed * Time.deltaTime);
             mainCamera.transform.rotation = Quaternion.Lerp(mainCamera.transform.rotation, targetRotation, cameraTransitionSpeed * Time.deltaTime);
-            Debug.Log((mainCamera.transform.position - targetPosition).sqrMagnitude);
-            Debug.Log((Quaternion.Angle(mainCamera.transform.rotation, targetRotation)));
             yield return null;
         }
-        cameraState = CameraState.FreeView; // free view
-        freeCameraController.enabled = true;
+
+        cameraState = nextState; // change to the next state after transition
+
+        switch (nextState)
+        {
+            case CameraState.AreaView:
+                followCueBallCamera.enabled = true;
+                break;
+            case CameraState.CueBallView:
+                break;
+            case CameraState.FreeView:
+                freeCameraController.enabled = true;
+                break;
+        }
     }
+    
     private void UpdateCameraState()
     {
         Vector3 targetPosition = Vector3.zero;
@@ -150,9 +178,7 @@ public class GameManager : MonoBehaviour
         switch (cameraState)
         {
             case CameraState.AreaView:
-                targetPosition = fieldViewCameraPosition;
-                targetRotation = fieldViewCameraRotation;
-                break;
+                return;
             case CameraState.CueBallView:
                 Vector3 cueBallToEightBallDirection = (eightBall.transform.position - cueBallController.transform.position).normalized;
                 targetPosition = cueBallController.transform.position - cueBallToEightBallDirection * cueBallCameraOffset.magnitude;
