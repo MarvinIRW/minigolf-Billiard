@@ -20,8 +20,9 @@ public class PlayerController : MonoBehaviour
     private bool useKeyAiming = false;
     [SerializeField] private float rotationSpeedKeyAiming = 50f;
     [SerializeField] private GameObject eightBall;
-    private Vector3 aimDirection;
+    private Vector3 aimDirectionKey;
     private float accumulatedKeyPressTime = 0f;
+    [SerializeField] AimModeButton aimModeButton;
 
     //aiming line
     [SerializeField] private LineRenderer lineRenderer;
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
     public CueBallController CueBallController { get { return cueBallController; } }
     public Camera MainCamera { get { return mainCamera; } }
     public bool IsAimingLineEnabled { get; set; } = true;
-    public bool UseKeyAiming  {get { return useKeyAiming; } set { useKeyAiming = value; } }
+    public bool UseKeyAiming { get { return useKeyAiming; } set { useKeyAiming = value; } }
 
 
     private void Update()
@@ -52,9 +53,10 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             // Initialize aiming direction
-            aimDirection = (eightBall.transform.position - cueBallController.transform.position).normalized;
-            aimDirection.y = 0;  // Make sure Y direction is always 0
+            aimDirectionKey = (eightBall.transform.position - cueBallController.transform.position).normalized;
+            aimDirectionKey.y = 0;  // Make sure Y direction is always 0
             useKeyAiming = !useKeyAiming;
+            aimModeButton.UpdateButton();
         }
         // if Player uses KEYS to aim:
         if (useKeyAiming)
@@ -74,7 +76,9 @@ public class PlayerController : MonoBehaviour
                 int rotationDirection = Input.GetKey(KeyCode.Q) ? 1 : -1;
 
                 // Rotate the aiming direction.
-                aimDirection = Quaternion.Euler(0, rotationAngle * rotationDirection, 0) * aimDirection;
+                aimDirectionKey = Quaternion.Euler(0, rotationAngle * rotationDirection, 0) * aimDirectionKey;
+                Debug.Log("rotating key aiming");
+
             }
             else
             {
@@ -83,41 +87,45 @@ public class PlayerController : MonoBehaviour
             }
 
             // Calculate a point in the world along the aimDirection from the cue ball
-            Vector3 aimPoint = cueBallController.transform.position + aimDirection * aimingLineLength;
+            Vector3 aimPoint = cueBallController.transform.position + aimDirectionKey * 1;
             UpdateAimingLine(aimPoint);
+            Debug.Log("key aiming pre shot");
 
-            HandleShooting(useKeyAiming); // Handle shooting with keyboard aiming
+
+            HandleShooting(useKeyAiming, aimDirectionKey); // Handle shooting with keyboard aiming
             return; // don't further go down and use mouse aiming
         }
 
-        // only proceed if you actually aim
+        // only proceed if you actually aim with mouse 
         // Aim the shot using the mouse position
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (!Physics.Raycast(ray, out hit))
-        {
-            // if not aiming on abject no display line
-            UpdateAimingLine(null);
-            return;
-        }
-        UpdateAimingLine(hit.point);
-
         // Only proceed if not over UI
         if (IsPointerOverUIButton())
         {
             Debug.Log("over UI");
             return;
         }
-        // Aim the shot using the mouse position
-        aimDirection = (hit.point - cueBallController.transform.position).normalized;
-        aimDirection.y = 0;  // Make sure Y direction is always 0
+
+        Plane aimPlane = new Plane(Vector3.up, cueBallController.transform.position);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        // The ray does not intersects the plane
+        if (!aimPlane.Raycast(ray, out float distance))
+        {
+            UpdateAimingLine(null);
+            return;
+        }
+
+        Vector3 hitPoint = ray.GetPoint(distance);
+        Vector3 aimDirectionMouse = (hitPoint - cueBallController.transform.position).normalized;
+        aimDirectionMouse.y = 0;  // Make sure Y direction is always 0
+
+        UpdateAimingLine(hitPoint);
 
         // Handle shooting with mouse aiming
-        HandleShooting(useKeyAiming);
+        HandleShooting(useKeyAiming, aimDirectionMouse);
     }
 
     // can shoot with space or mouse, depending on the useKeyAiming state
-    private void HandleShooting(bool useSpaceAiming)
+    private void HandleShooting(bool useSpaceAiming, Vector3 aimDirection)
     {
         // Determine the relevant input methods based on the aiming mode
         bool inputDown = useSpaceAiming ? Input.GetKeyDown(KeyCode.Space) : Input.GetMouseButtonDown(0);
@@ -130,6 +138,8 @@ public class PlayerController : MonoBehaviour
             ballManager.StoreInitialState();
             mouseDownTime = Time.time;
             shotStrength = 0f;
+            Debug.Log("input down");
+
         }
 
         // While input is held, calculate the shot strength based on time
@@ -145,11 +155,15 @@ public class PlayerController : MonoBehaviour
                 shotStrengthDirection *= -1f;
                 mouseDownTime = Time.time;
             }
+            Debug.Log("shot strength up");
+
         }
 
         // If input is released, shoot the cue ball and increment shots taken counter
         if (inputUp)
         {
+            Debug.Log("shooting");
+
             cueBallController.Shoot(aimDirection * shotStrength);
             shotsTaken++;
         }

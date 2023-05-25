@@ -17,7 +17,7 @@ public class AimModeButton : MonoBehaviour
         UpdateButton();
     }
     // This method updates the button's color and text based on whether the aiming line is enable
-    private void UpdateButton()
+    public void UpdateButton()
     {
         // Check if aiming line is enabled and change the color accordingly
         if (playerController.UseKeyAiming)
