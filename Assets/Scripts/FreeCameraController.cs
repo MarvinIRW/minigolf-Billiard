@@ -7,10 +7,10 @@ using UnityEngine;
 /// 
 /// Keys:
 ///	wasd / arrows	- movement
-///	space/leftshift			- up/down (local space)
-///	r/f 			- up/down (world space)
+///	space/leftshift	- up/down (local space)
+///	g/f 			- up/down (world space)
 ///	pageup/pagedown	- up/down (world space)
-///	hold rightshift		- enable fast movement mode
+///	hold rightshift - enable fast movement mode
 ///	right mouse  	- enable free look
 ///	mouse			- free look / rotation
 ///     
@@ -70,7 +70,7 @@ public class FreeCameraController : MonoBehaviour
             transform.position = transform.position + (-transform.forward * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftAlt))
         {
             transform.position = transform.position + (transform.up * movementSpeed * Time.deltaTime);
         }
@@ -80,7 +80,7 @@ public class FreeCameraController : MonoBehaviour
             transform.position = transform.position + (-transform.up * movementSpeed * Time.deltaTime);
         }
 
-        if (Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.PageUp))
+        if (Input.GetKey(KeyCode.G) || Input.GetKey(KeyCode.PageUp))
         {
             transform.position = transform.position + (Vector3.up * movementSpeed * Time.deltaTime);
         }

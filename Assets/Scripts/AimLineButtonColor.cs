@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class AimButtonColor : MonoBehaviour
+
+public class AimLineButtonColor : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Button button;
@@ -33,5 +35,8 @@ public class AimButtonColor : MonoBehaviour
     {
         playerController.IsAimingLineEnabled = !playerController.IsAimingLineEnabled;  // Toggle the state of aiming line
         UpdateButton();  // Update the button's color and text
+
+        // Deselect the button....
+        EventSystem.current.SetSelectedGameObject(null);
     }
 }
