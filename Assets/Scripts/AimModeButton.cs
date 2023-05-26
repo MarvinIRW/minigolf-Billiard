@@ -21,6 +21,7 @@ public class AimModeButton : MonoBehaviour
     {
         // Check if aiming line is enabled and change the color accordingly
         if (playerController.UseKeyAiming)
+
         {
             button.image.color = KeyColor;
             buttonText.text = "Mode: Key";
