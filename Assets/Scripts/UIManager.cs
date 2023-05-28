@@ -80,6 +80,7 @@ public class UIManager : MonoBehaviour
     // next level is reached
     public void NextLevel(int shotsTaken)
     {
+        statusText.color = new Color(0.1f, 0f, 0.75f, 1);
         if (shotsTaken == 1)
         {
             statusText.text = "Amazing Job, you took only one shot!";
@@ -93,6 +94,7 @@ public class UIManager : MonoBehaviour
     // Updates the status text to Game Over when the game is lost
     public void GameOver()
     {
+        statusText.color = new Color(0.75f, 0.35f, 0.35f, 1);
         statusText.text = "Game Over";
     }
     // Updates the status text to You won :) when the game is won

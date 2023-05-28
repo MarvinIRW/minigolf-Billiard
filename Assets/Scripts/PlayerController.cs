@@ -52,11 +52,7 @@ public class PlayerController : MonoBehaviour
         // toggle between aiming control methods
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // Initialize aiming direction
-            aimDirectionKey = (eightBall.transform.position - cueBallController.transform.position).normalized;
-            aimDirectionKey.y = 0;  // Make sure Y direction is always 0
-            useKeyAiming = !useKeyAiming;
-            aimModeButton.UpdateButton();
+            ToggleAimingMode();
         }
         // if Player uses KEYS to aim:
         if (useKeyAiming)
@@ -169,6 +165,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void ToggleAimingMode()
+    {
+        // Initialize aiming direction
+        aimDirectionKey = (eightBall.transform.position - cueBallController.transform.position).normalized;
+        aimDirectionKey.y = 0;  // Make sure Y direction is always 0
+        useKeyAiming = !useKeyAiming;
+        aimModeButton.UpdateButton();
+    }
 
     //daws the aiming line if aming //fuck this thing..
     private void UpdateAimingLine(Vector3? worldPoint)

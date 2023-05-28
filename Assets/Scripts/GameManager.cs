@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
         // If EightBall falls into the hole, the game is over
         if (other.gameObject.CompareTag("EightBall"))
         {
+            StartCoroutine(Sinking(other.gameObject));
             EightBallInHole();
         }
     }
@@ -87,6 +88,29 @@ public class GameManager : MonoBehaviour
         gameOver = true;
         CheckGameStatus();
     }
+    private IEnumerator Sinking(GameObject eightball)
+    {
+        // Disable the ball's physics while it sinks
+        var rigidBody = eightBall.GetComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
+
+        // Make the ball sink for a set amount of time
+        float sinkDuration = 4f; // The time it takes for the ball to sink
+        float startTime = Time.time;
+
+        Vector3 initialPosition = eightBall.transform.position;
+        Vector3 holePosition = transform.position; // If GameManager script is attached to the hole object
+        Vector3 targetPosition = new Vector3(holePosition.x, holePosition.y-0.5f , holePosition.z); // Adjust y value based on how deep the hole is
+
+        while (Time.time < startTime + sinkDuration)
+        {
+            float t = (Time.time - startTime) / sinkDuration;
+            eightBall.transform.position = Vector3.Lerp(initialPosition, targetPosition, t);
+
+            yield return null; // Wait for next frame
+        }
+    }
+
     private void CheckGameStatus()
     {
         // If the game is over and player has taken less or equal shots than maxShots, player wins

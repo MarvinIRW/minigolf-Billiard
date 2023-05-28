@@ -36,8 +36,7 @@ public class AimModeButton : MonoBehaviour
     // This method is called when the button is clicked
     public void OnClick()
     {
-        playerController.UseKeyAiming = !playerController.UseKeyAiming;  // Toggle the state of aiming line
-        UpdateButton();  // Update the button's color and text
+        playerController.ToggleAimingMode();
 
         // Deselect the button....
         EventSystem.current.SetSelectedGameObject(null);
