@@ -204,12 +204,16 @@ public class PlayerController : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, totalRaycastLength))
                 {
-                    // Check if the raycast hit an object tagged as "GameEnvironment"
-                    if (hit.collider.CompareTag("GameEnvironment"))
+                    // Check if the raycast hit an object tagged as "GameEnvironment" or "Hole"
+                    if (hit.collider.CompareTag("GameEnvironment") || hit.collider.CompareTag("Hole"))
                     {
                         endPosition = hit.point;
-                        reflectedDirection = Vector3.Reflect(reflectedDirection, hit.normal);
-                        reflectedDirection.y = 0; // Ensure the reflected direction remains horizontal
+                        // If the hit object is not a hole, reflect the direction
+                        if (!hit.collider.CompareTag("Hole"))
+                        {
+                            reflectedDirection = Vector3.Reflect(reflectedDirection, hit.normal);
+                            reflectedDirection.y = 0; // Ensure the reflected direction remains horizontal
+                        }
                         totalRaycastLength -= hit.distance; // Subtract the distance traveled from the total
                         positions.Add(endPosition);
                     }
