@@ -56,9 +56,24 @@ public class FollowCueBallCamera : MonoBehaviour
         {
             distanceToCueBall = Mathf.Clamp(distanceToCueBall - scrollInput * zoomSpeed, minDistance, maxDistance);
         }
+        //newPosition = AdjustPositionForTerrain(newPosition);
 
         // smoothly move and rotate the camera
         transform.position = Vector3.SmoothDamp(transform.position, newPosition, ref currentVelocity, cameraSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, cameraSpeed * Time.deltaTime);
     }
+
+    /*private Vector3 AdjustPositionForTerrain(Vector3 position)
+    {
+        // Assuming your terrain's y position is at 0
+        float terrainHeightAtPosition = Terrain.activeTerrain.SampleHeight(position);
+
+        if (position.y < terrainHeightAtPosition)
+        {
+            position.y = terrainHeightAtPosition;
+        }
+
+        return position;
+    }*/
+
 }

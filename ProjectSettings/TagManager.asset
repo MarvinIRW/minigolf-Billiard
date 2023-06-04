@@ -9,6 +9,7 @@ TagManager:
   - UIBlocking
   - Ground
   - GameEnvironment
+  - Terrain
   layers:
   - Default
   - TransparentFX

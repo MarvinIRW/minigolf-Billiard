@@ -7,6 +7,7 @@ public class CueBallController : MonoBehaviour
     private Rigidbody cueBallRigidbody;
     public Rigidbody CueBallRigidbody { get { return cueBallRigidbody; } }
     [SerializeField] private AudioClip hitSound;
+    [SerializeField] private AudioClip collisionBallSound;
     private AudioSource audioSource;
     // Initialize Rigidbody and AudioSource
     private void Start()
@@ -25,8 +26,9 @@ public class CueBallController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("EightBall"))
         {
-            audioSource.PlayOneShot(hitSound);
+            audioSource.PlayOneShot(collisionBallSound);
         }
+        
     }
     // Check if the cue ball is stationary
     public bool IsStationary()
