@@ -4,41 +4,45 @@ using UnityEngine.EventSystems;
 
 public class AimModeButton : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerController;
-    [SerializeField] private Button button;
-    [SerializeField] private Text buttonText;
+    // Serialized fields for the player controller, button, and button text
+    [SerializeField] private PlayerController _playerController;
+    [SerializeField] private Button _button;
+    [SerializeField] private Text _buttonText;
 
-    private Color KeyColor = new Color(0, 0.5f, 1, 0.6f);  // Green with 70% opacity
-    private Color MouseColor = new Color(1, 0.92f, 0.16f, 0.6f);  // Red with 70% opacity
+    // Private variables for the key and mouse colors
+    private Color _keyColor = new Color(0, 0.5f, 1, 0.6f);  // Blue with 60% opacity
+    private Color _mouseColor = new Color(1, 0.92f, 0.16f, 0.6f);  // Yellow with 60% opacity
 
+    // Start is called before the first frame update
     private void Start()
     {
-        buttonText.text = "Mode: Mouse";  // Setting the button text
+        _buttonText.text = "Mode: Mouse";  // Setting the button text
         UpdateButton();
     }
-    // This method updates the button's color and text based on whether the aiming line is enable
+
+    // This method updates the button's color and text based on the current aiming mode
     public void UpdateButton()
     {
-        // Check if aiming line is enabled and change the color accordingly
-        if (playerController.UseKeyAiming)
-
+        // Check if key aiming is enabled and change the color and text accordingly
+        if (_playerController.UseKeyAiming)
         {
-            button.image.color = KeyColor;
-            buttonText.text = "Mode: Key";
+            _button.image.color = _keyColor;
+            _buttonText.text = "Mode: Key";
         }
         else
         {
-            button.image.color = MouseColor;
-            buttonText.text = "Mode: Mouse";
-
+            _button.image.color = _mouseColor;
+            _buttonText.text = "Mode: Mouse";
         }
     }
+
     // This method is called when the button is clicked
     public void OnClick()
     {
-        playerController.ToggleAimingMode();
+        // Toggle the aiming mode
+        _playerController.ToggleAimingMode();
 
-        // Deselect the button....
+        // Deselect the button
         EventSystem.current.SetSelectedGameObject(null);
     }
 }

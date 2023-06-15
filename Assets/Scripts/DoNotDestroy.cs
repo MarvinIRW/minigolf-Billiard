@@ -6,11 +6,16 @@ public class DoNotDestroy : MonoBehaviour
 {
     private void Awake()
     {
-        GameObject[] musicObj = GameObject.FindGameObjectsWithTag("BackgroundMusic");  
-        if (musicObj.Length > 1)
+        // Find all game objects tagged as "BackgroundMusic"
+        GameObject[] musicObjects = GameObject.FindGameObjectsWithTag("BackgroundMusic");
+
+        // If there is more than one music object, destroy the current game object
+        if (musicObjects.Length > 1)
         {
             Destroy(this.gameObject);
         }
+
+        // Prevent the game object from being destroyed when loading a new scene
         DontDestroyOnLoad(this.gameObject);
     }
 }

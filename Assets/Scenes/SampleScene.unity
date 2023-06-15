@@ -324,7 +324,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 574594581}
         m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: Play
+        m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -920,8 +920,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fce0a7c8b310249af56a8fb2d21dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioSource: {fileID: 0}
-  volumeSlider: {fileID: 376199516}
+  ObjectMusic: {fileID: 350365431}
+  _volumeSlider: {fileID: 376199516}
 --- !u!4 &302600737
 Transform:
   m_ObjectHideFlags: 0
@@ -936,6 +936,147 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &350365431
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 350365434}
+  - component: {fileID: 350365433}
+  - component: {fileID: 350365432}
+  m_Layer: 0
+  m_Name: BackgroundMusic
+  m_TagString: BackgroundMusic
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &350365432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350365431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7acf43ae35e8c2d45bb0dd1996e5e42c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!82 &350365433
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350365431}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 34adb60acacd3af4ca38f1ae3fede8b9, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &350365434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350365431}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.46186954, y: -1.9739676, z: 1.3099308}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &376199514
 GameObject:
@@ -1365,8 +1506,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -92, y: 34}
-  m_SizeDelta: {x: 140, y: 35}
+  m_AnchoredPosition: {x: -117.87, y: 34}
+  m_SizeDelta: {x: 191.74, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &477314958
 MonoBehaviour:
@@ -1474,9 +1615,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a16a687cfc832e47b1cd98549fce7c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 1330979084}
-  button: {fileID: 477314958}
-  buttonText: {fileID: 388558810}
+  _playerController: {fileID: 1330979084}
+  _button: {fileID: 477314958}
+  _buttonText: {fileID: 388558810}
 --- !u!1 &529770640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1787,8 +1928,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d264baf53093964eaf1c4a26617b6a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PausedMenuCanvas: {fileID: 111842411}
-  OptionsMenuCanvas: {fileID: 1952841805}
+  _pausedMenuCanvas: {fileID: 111842411}
+  _optionsMenuCanvas: {fileID: 1952841805}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2744,14 +2885,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b226d01080377834c94115c05c1ecb26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cueBall: {fileID: 188062197}
-  distanceToCueBall: 10
-  cameraSpeed: 5
-  zoomSpeed: 10
-  minDistance: 5
-  maxDistance: 15
-  minVerticalAngle: -60
-  maxVerticalAngle: 60
+  _cueBall: {fileID: 188062197}
+  _distanceToCueBall: 10
+  _cameraSpeed: 5
+  _zoomSpeed: 10
+  _minDistance: 3
+  _maxDistance: 20
+  _minVerticalAngle: -60
+  _maxVerticalAngle: 60
 --- !u!114 &963194231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2856,14 +2997,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6855c8e860c7d7b4aaa448803d9a8859, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 1330979084}
-  gameManager: {fileID: 1314156939}
-  ballManager: {fileID: 1762243466}
-  shotStrengthSlider: {fileID: 1036993095}
-  shotsText: {fileID: 1493512238}
-  statusText: {fileID: 264267156}
-  canShoot: {fileID: 243775232}
-  cameraPositionText: {fileID: 1525395060}
+  _playerController: {fileID: 1330979084}
+  _gameManager: {fileID: 1314156939}
+  _ballManager: {fileID: 1762243466}
+  _shotStrengthSlider: {fileID: 1036993095}
+  _shotsText: {fileID: 1493512238}
+  _statusText: {fileID: 264267156}
+  _canShoot: {fileID: 243775232}
+  _cameraPositionText: {fileID: 1525395060}
 --- !u!1 &993848640
 GameObject:
   m_ObjectHideFlags: 0
@@ -7822,8 +7963,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2068c1e7d48dbf04f849027b12060d26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Slider: {fileID: 1036993095}
-  sliderFill: {fileID: 767928470}
+  _slider: {fileID: 1036993095}
+  _sliderFill: {fileID: 767928470}
 --- !u!1 &1117700518
 GameObject:
   m_ObjectHideFlags: 0
@@ -8339,14 +8480,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a50238b0b6bf04c8449e100e78c56e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eightBall: {fileID: 110303958}
-  cueBallCameraOffset: {x: 0, y: 0, z: 0}
-  cameraTransitionSpeed: 2
-  _UIManager: {fileID: 993403544}
-  playerController: {fileID: 1330979084}
-  maxShots: 10
-  nextLevelSceneName: Level_01
-  ballManager: {fileID: 1762243466}
+  _eightBall: {fileID: 110303958}
+  _cueBallCameraOffset: {x: 0, y: 0, z: 0}
+  _cameraTransitionSpeed: 5
+  _uiManager: {fileID: 993403544}
+  _playerController: {fileID: 1330979084}
+  _maxShots: 10
+  _nextLevelSceneName: Level_01
+  _ballManager: {fileID: 1762243466}
 --- !u!1 &1330979083
 GameObject:
   m_ObjectHideFlags: 0
@@ -8376,15 +8517,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c11a8450559df7449a608770aff65834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cueBallController: {fileID: 188062198}
-  mainCamera: {fileID: 963194227}
-  gameManager: {fileID: 1314156939}
-  ballManager: {fileID: 1762243466}
-  rotationSpeedKeyAiming: 50
-  eightBall: {fileID: 110303958}
-  aimModeButton: {fileID: 2042521358}
-  lineRenderer: {fileID: 188062209}
-  aimingLineLength: 20
+  _cueBallController: {fileID: 188062198}
+  _mainCamera: {fileID: 963194227}
+  _gameManager: {fileID: 1314156939}
+  _ballManager: {fileID: 1762243466}
+  _eightBall: {fileID: 110303958}
+  _aimModeButton: {fileID: 2042521358}
+  _lineRenderer: {fileID: 188062209}
+  _aimingLineLength: 20
+  _rotationSpeedKeyAiming: 50
 --- !u!4 &1330979085
 Transform:
   m_ObjectHideFlags: 0
@@ -9660,8 +9801,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5660de279d15df418b354ec79089231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeedToStop: 0.25
-  levelBounds: {fileID: 1255317165}
+  _minSpeedToStop: 0.2
+  _levelBounds: {fileID: 1255317165}
 --- !u!1 &1763267115
 GameObject:
   m_ObjectHideFlags: 0
@@ -10333,8 +10474,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -92, y: 77}
-  m_SizeDelta: {x: 140, y: 35}
+  m_AnchoredPosition: {x: -117.872314, y: 77}
+  m_SizeDelta: {x: 191.7447, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2042521355
 MonoBehaviour:
@@ -10442,9 +10583,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d43d6dca570e9c4ab067df077919592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 1330979084}
-  button: {fileID: 2042521355}
-  buttonText: {fileID: 1289364196}
+  _playerController: {fileID: 1330979084}
+  _button: {fileID: 2042521355}
+  _buttonText: {fileID: 1289364196}
 --- !u!1 &2091379776
 GameObject:
   m_ObjectHideFlags: 0

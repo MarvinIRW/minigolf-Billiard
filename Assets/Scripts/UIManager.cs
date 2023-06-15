@@ -6,26 +6,28 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerController;
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private BallManager ballManager;
-    [SerializeField] private Slider shotStrengthSlider;
-    [SerializeField] private Text shotsText;
-    [SerializeField] private Text statusText;
-    [SerializeField] private Text canShoot;
-    [SerializeField] private Text cameraPositionText;
+    [SerializeField] private PlayerController _playerController;
+    [SerializeField] private GameManager _gameManager;
+    [SerializeField] private BallManager _ballManager;
+    [SerializeField] private Slider _shotStrengthSlider;
+    [SerializeField] private Text _shotsText;
+    [SerializeField] private Text _statusText;
+    [SerializeField] private Text _canShoot;
+    [SerializeField] private Text _cameraPositionText;
+
     // Setup initial UI text 
-    void Start()
+    private void Start()
     {
-        shotsText.text = $"Shots: 0";
-        shotsText.color = Color.black;
-        statusText.text = "";
-        statusText.color = Color.black;
-        canShoot.text = "No Moving Balls";
-        canShoot.color = Color.green;
-        cameraPositionText.text = "Camera Pos.: Area View";
-        cameraPositionText.color = Color.black;
+        _shotsText.text = $"Shots: 0";
+        _shotsText.color = Color.black;
+        _statusText.text = "";
+        _statusText.color = Color.black;
+        _canShoot.text = "No Moving Balls";
+        _canShoot.color = Color.green;
+        _cameraPositionText.text = "Camera Pos.: Area View";
+        _cameraPositionText.color = Color.black;
     }
+
     // Update the shot strength slider based on the current shot strength
     private void LateUpdate()
     {
@@ -33,76 +35,75 @@ public class UIManager : MonoBehaviour
         UpdateIsMoving();
         UpdateCameraPositionText();
     }
-    //Updates the canShoot text
+
+    // Updates the canShoot text based on whether any balls are moving
     private void UpdateIsMoving()
     {
-        if (ballManager.IsAnyMovement())
+        if (_ballManager.IsAnyMovement())
         {
-            canShoot.text = "Moving Balls";
-            canShoot.color = Color.red;
+            _canShoot.text = "Moving Balls";
+            _canShoot.color = Color.red;
         }
         else
         {
-            canShoot.text = "No Moving Balls";
-            canShoot.color = Color.green;
+            _canShoot.text = "No Moving Balls";
+            _canShoot.color = Color.green;
         }
     }
+
     // Updates the shot counter text 
     public void UpdateShotsText(int shots)
     {
-        shotsText.text = $"Shots: {shots}";
+        _shotsText.text = $"Shots: {shots}/{_gameManager.MaxShots}";
     }
+
     // Updates the shot strength slider based on the current shot strength
     private void UpdateShotStrengthSlider()
     {
-        float shotStrengthPercentage = (playerController.ShotStrength - playerController.MinShotStrength) / (playerController.MaxShotStrength - playerController.MinShotStrength);
-        shotStrengthSlider.value = playerController.ShotStrength;
+        float shotStrengthPercentage = (_playerController.ShotStrength - _playerController.MinShotStrength) / (_playerController.MaxShotStrength - _playerController.MinShotStrength);
+        _shotStrengthSlider.value = _playerController.ShotStrength;
     }
-    // update game camera text
+
+    // Updates the camera position text based on the current camera state
     public void UpdateCameraPositionText()
     {
-        switch (gameManager._CameraState)
+        switch (_gameManager.CurrentCameraState)
         {
             case GameManager.CameraState.AreaView:
-                cameraPositionText.text = "Camera Pos.: Area";
+                _cameraPositionText.text = "Camera Pos.: Area";
                 break;
             case GameManager.CameraState.CueBallView:
-                cameraPositionText.text = "Camera Pos.: Cue Ball";
+                _cameraPositionText.text = "Camera Pos.: Cue Ball";
                 break;
             case GameManager.CameraState.FreeView:
-                cameraPositionText.text = "Camera Pos.: Free";
+                _cameraPositionText.text = "Camera Pos.: Free";
                 break;
             case GameManager.CameraState.Transition:
-                cameraPositionText.text = "Camera Pos.: Transition";
+                _cameraPositionText.text = "Camera Pos.: Transition";
                 break;
             default:
-                cameraPositionText.text = "Camera Pos.:";
+                _cameraPositionText.text = "Camera Pos.:";
                 break;
         }
     }
-    // next level is reached
+
+    // Updates the status text when the next level is reached
     public void NextLevel(int shotsTaken)
     {
-        statusText.color = new Color(0.1f, 0f, 0.75f, 1);
-        if (shotsTaken == 1)
-        {
-            statusText.text = "Amazing Job, you took only one shot!";
-        }
-        else
-        {
-            statusText.text = $"Nice Job, you took {shotsTaken} shots!";
-        }
+        _statusText.color = new Color(0.1f, 0f, 0.75f, 1);
+        _statusText.text = shotsTaken == 1 ? "Amazing Job, hole-in-one!" : $"Nice Job, you took {shotsTaken} shots!";
     }
 
     // Updates the status text to Game Over when the game is lost
     public void GameOver()
     {
-        statusText.color = new Color(0.75f, 0.35f, 0.35f, 1);
-        statusText.text = "Game Over";
+        _statusText.color = new Color(0.75f, 0.35f, 0.35f, 1);
+        _statusText.text = "Game Over";
     }
-    // Updates the status text to You won :) when the game is won
+
+    // Updates the status text to "You won :)" when the game is won
     public void Win()
     {
-        statusText.text = "You won :)";
+        _statusText.text = "You won :)";
     }
 }

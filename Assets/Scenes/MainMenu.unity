@@ -2856,8 +2856,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fce0a7c8b310249af56a8fb2d21dba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjectMusic: {fileID: 0}
-  volumeSlider: {fileID: 1391734449}
+  ObjectMusic: {fileID: 133615132}
+  _volumeSlider: {fileID: 1391734449}
 --- !u!4 &2070950162
 Transform:
   m_ObjectHideFlags: 0
