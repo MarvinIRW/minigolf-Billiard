@@ -10,6 +10,7 @@ TagManager:
   - Ground
   - GameEnvironment
   - Terrain
+  - BackgroundMusic
   layers:
   - Default
   - TransparentFX

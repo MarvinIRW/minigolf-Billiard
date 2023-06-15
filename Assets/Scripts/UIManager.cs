@@ -18,10 +18,13 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         shotsText.text = $"Shots: 0";
+        shotsText.color = Color.black;
         statusText.text = "";
+        statusText.color = Color.black;
         canShoot.text = "No Moving Balls";
         canShoot.color = Color.green;
         cameraPositionText.text = "Camera Pos.: Area View";
+        cameraPositionText.color = Color.black;
     }
     // Update the shot strength slider based on the current shot strength
     private void LateUpdate()
