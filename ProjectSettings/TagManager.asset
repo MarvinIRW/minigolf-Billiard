@@ -11,6 +11,7 @@ TagManager:
   - GameEnvironment
   - Terrain
   - BackgroundMusic
+  - Obstacle
   layers:
   - Default
   - TransparentFX

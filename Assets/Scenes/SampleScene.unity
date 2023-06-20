@@ -10647,7 +10647,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 98922178207176088, guid: bd372260768b00741ae4061fb85e71d6, type: 3}
       propertyPath: m_TagString
-      value: Ground
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 98922178207176088, guid: bd372260768b00741ae4061fb85e71d6, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -10826,6 +10826,10 @@ PrefabInstance:
     - target: {fileID: 4483310168482088421, guid: 361fbd7645dc9ce4195b54ee16f4b610, type: 3}
       propertyPath: m_Name
       value: coneBarrier
+      objectReference: {fileID: 0}
+    - target: {fileID: 4483310168482088421, guid: 361fbd7645dc9ce4195b54ee16f4b610, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     - target: {fileID: 4483310168482088421, guid: 361fbd7645dc9ce4195b54ee16f4b610, type: 3}
       propertyPath: m_StaticEditorFlags

@@ -11,6 +11,9 @@ public class BallManager : MonoBehaviour
     // Private variables for ball rigidbodies and initial state
     private List<Rigidbody> _ballRigidbodies;
     private Dictionary<GameObject, (Vector3 position, Quaternion rotation)> _initialState = new Dictionary<GameObject, (Vector3 position, Quaternion rotation)>();
+    // A dictionary to store each ball's idle time
+    private Dictionary<Rigidbody, float> _ballIdleTimes = new Dictionary<Rigidbody, float>();
+
 
     // Initialize ballRigidbodies list with Rigidbody components of all children objects
     private void Start()
@@ -35,6 +38,8 @@ public class BallManager : MonoBehaviour
         }
     }
 
+
+
     // If a ball's speed is lower than minSpeedToStop, set its velocity and angular velocity to zero, effectively stopping it
     private void StopBallIfSlow(Rigidbody rb)
     {
@@ -50,11 +55,42 @@ public class BallManager : MonoBehaviour
     }
 
     // Checks if there is any movement
+    
     public bool IsAnyMovement()
     {
         foreach (Rigidbody rb in _ballRigidbodies)
         {
+            // If ball's speed is higher than minSpeedToStop, consider it as moving
             if (rb.velocity.magnitude > _minSpeedToStop)
+            {
+                // Reset this ball's idle time
+                _ballIdleTimes[rb] = 0;
+                return true;
+            }
+
+            // Otherwise, check if the ball is over an obstacle
+            if (IsBallOverObstacle(rb))
+            {
+                // If it's over an obstacle, increase its idle time
+                _ballIdleTimes[rb] += Time.deltaTime;
+
+                // If it hasn't moved for less than 1 second, still consider it as moving to prevent shooting
+                // in the unlicly case that a ball gets stuck on an obstacle, it will be considered as not moving if it hasn't moved for more than 1 second
+                if (_ballIdleTimes[rb] < 1f)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    // Check if a ball is over an obstacle
+    private bool IsBallOverObstacle(Rigidbody ball)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ball.position, -Vector3.up, out hit, 1.5f))
+        {
+            if (hit.collider.CompareTag("Obstacle"))
             {
                 return true;
             }
