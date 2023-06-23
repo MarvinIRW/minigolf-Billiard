@@ -27,12 +27,16 @@ public class BackgroundMusicScript : MonoBehaviour
         // Get the saved music volume or use a default value
         _musicVolume = PlayerPrefs.GetFloat("backgroundVolume", 0.5f);
 
-        // Set the audio source volume and the slider value
+        // Set the audio source volume
         _audioSource.volume = _musicVolume;
-        _volumeSlider.value = _musicVolume;
+
+        // Set the slider value if the slider exists - not every scene has a slider
+        if (_volumeSlider != null)
+        {
+            _volumeSlider.value = _musicVolume;
+        }
     }
 
-    // Called once per frame
     void Update()
     {
         // Update the audio source volume and save it

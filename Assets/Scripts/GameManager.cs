@@ -35,7 +35,11 @@ public class GameManager : MonoBehaviour
     // Variables for game management
     [SerializeField] private UIManager _uiManager;
     [SerializeField] private PlayerController _playerController;
-    [SerializeField] private int _maxShots = 10;
+    private int _maxShots;
+    [SerializeField] private int _easyShots = 1000;
+    [SerializeField] private int _mediumShots = 20;
+    [SerializeField] private int _hardShots = 5;
+    [SerializeField] private int _insaneShots = 1;
     private bool _gameOver = false; // Flag to indicate if the game is over
     [SerializeField] private string _nextLevelSceneName; //name of the next level to be loaded
 
@@ -47,6 +51,26 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
+        int difficulty = PlayerPrefs.GetInt("difficulty", 0);
+        // switch case to determine maxShots
+        switch (difficulty)
+        {
+            case 0:  // Easy
+                _maxShots = _easyShots;
+                break;
+            case 1:  // Medium
+                _maxShots = _mediumShots;
+                break;
+            case 2:  // Hard
+                _maxShots = _hardShots;
+                break;
+            case 3: //insane
+                _maxShots = _insaneShots;
+                break;
+            default:  // Default to medium difficulty
+                _maxShots = 10;
+                break;
+        }
         _cueBallController = _playerController.CueBallController;
         _mainCamera = _playerController.MainCamera;
         _fieldViewCameraPosition = _mainCamera.transform.position;
