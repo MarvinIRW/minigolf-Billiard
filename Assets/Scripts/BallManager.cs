@@ -25,6 +25,7 @@ public class BallManager : MonoBehaviour
             if (rb != null)
             {
                 _ballRigidbodies.Add(rb);
+                _ballIdleTimes[rb] = 0;
             }
         }
     }
@@ -54,7 +55,7 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    // Checks if there is any movement
+    // Checks if there is any moving ball
     
     public bool IsAnyMovement()
     {
@@ -84,6 +85,7 @@ public class BallManager : MonoBehaviour
         }
         return false;
     }
+
     // Check if a ball is over an obstacle
     private bool IsBallOverObstacle(Rigidbody ball)
     {

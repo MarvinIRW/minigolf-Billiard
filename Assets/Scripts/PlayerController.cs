@@ -18,16 +18,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int _aimingLineLength = 20;
     [SerializeField] private float _rotationSpeedKeyAiming = 50f;
 
-    private float _maxShotStrength = 20f;
-    private float _minShotStrength = 1f;
-    private float _shotStrengthMultiplier = 0.5f;
-    private float _shotStrengthDirection = 1f;
+    private float _maxShotStrength;
+    private float _minShotStrength;
+    private float _shotStrengthMultiplier;
+    private float _shotStrengthDirection;
     private float _mouseDownTime;
-    private float _shotStrength = 0;
-    private int _shotsTaken = 0;
-    private bool _useKeyAiming = false;
+    private float _shotStrength;
+    private int _shotsTaken;
+    private bool _useKeyAiming;
     private Vector3 _aimDirectionKey;
-    private float _accumulatedKeyPressTime = 0f;
+    private float _accumulatedKeyPressTime;
+    private bool _isShooting;
+
 
     // Properties for other scripts to access variables
     public float ShotStrength { get { return _shotStrength; } }
@@ -38,17 +40,31 @@ public class PlayerController : MonoBehaviour
     public Camera MainCamera { get { return _mainCamera; } }
     public bool IsAimingLineEnabled { get; set; } = true;
     public bool UseKeyAiming { get { return _useKeyAiming; } set { _useKeyAiming = value; } }
+    public bool IsShooting { get { return _isShooting; } set { _isShooting = value; } }
 
+    private void Start()
+    {
+        // Set initial values
+        _maxShotStrength = 20f;
+        _minShotStrength = 1f;
+        _shotStrengthMultiplier = 0.5f;
+        _shotStrengthDirection = 1f;
+        _shotStrength = 0;
+        _shotsTaken = 0;
+        _useKeyAiming = false;
+        _accumulatedKeyPressTime = 0f;
+    }
     private void Update()
     {
         // If game is paused, do nothing
         if (PauseMenu.Paused) return;
 
-        // Check if the cue ball is stationary otherwise no shot
-        if (_ballManager.IsAnyMovement())
+        // if game is over, do nothing
+        if (_gameManager.GameOver) return;
+
+        // Check if player is shooting
+        if (_isShooting)
         {
-            // If balls moving don't show aiming line
-            UpdateAimingLine(null);
             return;
         }
 
@@ -166,7 +182,22 @@ public class PlayerController : MonoBehaviour
         {
             _cueBallController.Shoot(aimDirection * _shotStrength);
             _shotsTaken++;
+            UpdateAimingLine(null);
+            _isShooting = true;
+            StartCoroutine(WaitForBallsToMove());
         }
+    }
+
+    // Balls dont regester movement instantly so we need to wait a bit
+    private IEnumerator WaitForBallsToMove()
+    {
+        yield return new WaitForSeconds(0.1f);
+        while (_ballManager.IsAnyMovement())
+        {
+            yield return null; // Wait for next frame
+        }
+
+        _isShooting = false;
     }
 
     public void ToggleAimingMode()

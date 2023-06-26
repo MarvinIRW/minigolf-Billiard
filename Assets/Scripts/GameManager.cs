@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
         Transition
     }
     private CameraState _cameraState = CameraState.AreaView;
-    public CameraState CurrentCameraState { get { return _cameraState; } }
 
     // Variables for game management
     [SerializeField] private UIManager _uiManager;
@@ -40,14 +39,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _mediumShots = 20;
     [SerializeField] private int _hardShots = 5;
     [SerializeField] private int _insaneShots = 1;
-    private bool _gameOver = false; // Flag to indicate if the game is over
+    private bool _gameDone = false; // Flag to indicate if the game is over
     [SerializeField] private string _nextLevelSceneName; //name of the next level to be loaded
 
     // For out of bounds checks
     [SerializeField] private BallManager _ballManager;
 
-    //getter for maxShots
+    //getters
     public int MaxShots { get { return _maxShots; } }
+    public CameraState CurrentCameraState { get { return _cameraState; } }
+    public bool GameOver { get { return _gameDone; } }
 
     public void Start()
     {
@@ -88,13 +89,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (_gameOver) return; // If game is over, do not proceed further
+        // If game is over, do not proceed further
+        if (_gameDone) return; 
 
         // Update UI with the number of shots taken
         _uiManager.UpdateShotsText(_playerController.ShotsTaken);
 
-        // Check the game status
-        CheckGameStatus();
+        // Check the game status only if player is not shooting
+        if (!_playerController.IsShooting)
+        {
+            Debug.Log("Checking game loss status");
+            CheckGameLost();
+        }
 
         // Camera update
         if (Input.GetKeyDown(KeyCode.C)) // If C key is pressed, change camera state
@@ -115,15 +121,40 @@ public class GameManager : MonoBehaviour
         if (other.gameObject.CompareTag("EightBall"))
         {
             StartCoroutine(Sinking(other.gameObject));
-            EightBallInHole();
+            GameWon();
+        }
+    }
+    public void CheckGameLost()
+    {
+        // If the shots taken is greater or equal to max shots and balls are stationary, game is lost
+        if (_playerController.ShotsTaken >= _maxShots && !_ballManager.IsAnyMovement())
+        {
+            GameLost();
         }
     }
 
-    private void EightBallInHole()
+    private void GameWon()
     {
-        Debug.Log("Eight-ball in the hole!");
-        _gameOver = true;
-        CheckGameStatus();
+        if (_gameDone) return;
+
+        Debug.Log("You won!");
+
+        // Update game status
+        _gameDone = true;
+
+        //maybe if condition to play only this level for later
+        _uiManager.NextLevel(_playerController.ShotsTaken);
+        Invoke("LoadNextLevel", 4);  // Load next level in 4 sec
+    }
+
+    private void GameLost()
+    {
+        Debug.Log("You lost!");
+
+        // Update game status
+        _gameDone = true;
+
+        _uiManager.GameOver(); // Display game over text
     }
 
     private IEnumerator Sinking(GameObject eightball)
@@ -149,26 +180,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CheckGameStatus()
-    {
-        // If the game is over and player has taken less or equal shots than maxShots, player wins
-        if (_gameOver && _playerController.ShotsTaken <= _maxShots)
-        {
-            Debug.Log("You won!");
-            //_UIManager.Win(); // Display win text
-
-            //maybe if condition to play only this level for later
-            _uiManager.NextLevel(_playerController.ShotsTaken);
-            Invoke("LoadNextLevel", 4);  // Load next level in 4 sec
-        }
-        // If player has taken more than maxShots, player loses
-        else if (_playerController.ShotsTaken >= _maxShots)
-        {
-            Debug.Log("You lost!");
-            _gameOver = true;
-            _uiManager.GameOver(); // Display game over text
-        }
-    }
 
     // Method to load next level
     private void LoadNextLevel()

@@ -14,10 +14,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _statusText;
     [SerializeField] private Text _canShoot;
     [SerializeField] private Text _cameraPositionText;
+    [SerializeField] private GameObject _gameOverWinButtons;
 
     // Setup initial UI text 
     private void Start()
     {
+        // Set the initial UI text
         _shotsText.text = $"Shots: 0";
         _shotsText.color = Color.black;
         _statusText.text = "";
@@ -26,6 +28,8 @@ public class UIManager : MonoBehaviour
         _canShoot.color = Color.green;
         _cameraPositionText.text = "Camera Pos.: Area View";
         _cameraPositionText.color = Color.black;
+        
+        _gameOverWinButtons.SetActive(false);
     }
 
     // Update the shot strength slider based on the current shot strength
@@ -99,6 +103,7 @@ public class UIManager : MonoBehaviour
     {
         _statusText.color = new Color(0.75f, 0.35f, 0.35f, 1);
         _statusText.text = "Game Over";
+        _gameOverWinButtons.SetActive(true);
     }
 
     // Updates the status text to "You won :)" when the game is won
