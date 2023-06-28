@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text _canShoot;
     [SerializeField] private Text _cameraPositionText;
     [SerializeField] private GameObject _gameOverWinButtons;
+    [SerializeField] private Text _resettingBallText;
 
     // Setup initial UI text 
     private void Start()
@@ -66,6 +67,11 @@ public class UIManager : MonoBehaviour
     {
         float shotStrengthPercentage = (_playerController.ShotStrength - _playerController.MinShotStrength) / (_playerController.MaxShotStrength - _playerController.MinShotStrength);
         _shotStrengthSlider.value = _playerController.ShotStrength;
+    }
+    // Updates the resetting ball text based on whether the ball is resetting
+    public void UpdateResettingBallText(bool isResetting)
+    {
+        _resettingBallText.gameObject.SetActive(isResetting);
     }
 
     // Updates the camera position text based on the current camera state

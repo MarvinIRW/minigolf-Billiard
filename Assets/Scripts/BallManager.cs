@@ -7,10 +7,13 @@ public class BallManager : MonoBehaviour
     // Serialized fields for minimum speed to stop and level bounds
     [SerializeField] private float _minSpeedToStop = 0.05f;
     [SerializeField] private GameObject _levelBounds;
+    [SerializeField] private UIManager _uiManager;
+    [SerializeField] private GameManager _gameManager;
 
     // Private variables for ball rigidbodies and initial state
     private List<Rigidbody> _ballRigidbodies;
     private Dictionary<GameObject, (Vector3 position, Quaternion rotation)> _initialState = new Dictionary<GameObject, (Vector3 position, Quaternion rotation)>();
+    private Coroutine _resetCoroutine = null;
     // A dictionary to store each ball's idle time
     private Dictionary<Rigidbody, float> _ballIdleTimes = new Dictionary<Rigidbody, float>();
 
@@ -126,31 +129,59 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    // Checks if any ball is out of bounds
-    public bool IsAnyBallOutOfBounds()
+    public void StartResetCoroutine()
     {
-        var levelBoundsCollider = _levelBounds.GetComponent<Collider>();
-        if (levelBoundsCollider == null)
+        // If a reset coroutine is already running, do nothing
+        if (_resetCoroutine != null || _gameManager.GameOver)
         {
-            Debug.LogError("levelBounds game object doesn't have a Collider component!");
-            return false;
+            return;
         }
-        foreach (Rigidbody rb in _ballRigidbodies)
-        {
-            if (!levelBoundsCollider.bounds.Contains(rb.position))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    // Checks if balls are out of bounds and resets them if necessary
-    public void CheckBallsOutBounds()
-    {
-        if (IsAnyBallOutOfBounds())
-        {
-            ResetToInitialState();
-        }
+        // Otherwise, start a new reset coroutine
+        _resetCoroutine = StartCoroutine(ResetAfterDelay(2f));
     }
+    // This coroutine waits for the specified delay before resetting all balls
+    private IEnumerator ResetAfterDelay(float delay)
+    {
+        _uiManager.UpdateResettingBallText(true);
+        // Wait for the specified delay
+        yield return new WaitForSeconds(delay);
+
+        // Reset all balls to their initial state
+        ResetToInitialState();
+
+        // Hide the reset text at the end of the coroutine
+        _uiManager.UpdateResettingBallText(false);
+
+        // Clear the reset coroutine
+        _resetCoroutine = null;
+    }
+    
+    //Checks if any ball is out of bounds
+    //public bool IsAnyBallOutOfBounds()
+    //{
+    //    var levelBoundsCollider = _levelBounds.GetComponent<Collider>();
+    //    if (levelBoundsCollider == null)
+    //    {
+    //        Debug.LogError("levelBounds game object doesn't have a Collider component!");
+    //        return false;
+    //    }
+    //    foreach (Rigidbody rb in _ballRigidbodies)
+    //    {
+    //        if (!levelBoundsCollider.bounds.Contains(rb.position))
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
+
+    //// Checks if balls are out of bounds and resets them if necessary
+    //public void CheckBallsOutBounds()
+    //{
+    //    if (IsAnyBallOutOfBounds())
+    //    {
+    //        ResetToInitialState();
+    //    }
+    //}
 }

@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour
         // Check the game status only if player is not shooting
         if (!_playerController.IsShooting)
         {
-            Debug.Log("Checking game loss status");
+            //Debug.Log("Checking game loss status");
             CheckGameLost();
         }
 
@@ -111,8 +111,9 @@ public class GameManager : MonoBehaviour
         // Update camera's position based on the current state
         UpdateCameraState();
 
-        // Check if any ball is out of bounds and resets it 
-        _ballManager.CheckBallsOutBounds();
+        // Check if any ball is out of bounds and resets it
+        // handeld now by ballmanager directly
+        //_ballManager.CheckBallsOutBounds();
     }
 
     private void OnTriggerEnter(Collider other)

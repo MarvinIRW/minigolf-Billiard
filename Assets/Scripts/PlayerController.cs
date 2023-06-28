@@ -17,9 +17,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private int _aimingLineLength = 20;
     [SerializeField] private float _rotationSpeedKeyAiming = 50f;
+    [SerializeField] private float _maxShotStrength = 20f;
+    [SerializeField] private float _minShotStrength = 0.5f;
 
-    private float _maxShotStrength;
-    private float _minShotStrength;
+
     private float _shotStrengthMultiplier;
     private float _shotStrengthDirection;
     private float _mouseDownTime;
@@ -45,8 +46,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         // Set initial values
-        _maxShotStrength = 20f;
-        _minShotStrength = 1f;
         _shotStrengthMultiplier = 0.5f;
         _shotStrengthDirection = 1f;
         _shotStrength = 0;
