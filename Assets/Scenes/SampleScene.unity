@@ -3243,7 +3243,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &993848641
 Transform:
@@ -9304,6 +9304,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Hole
       objectReference: {fileID: 0}
+    - target: {fileID: 5742026118202742601, guid: 1a09ac14325f729418ee88eb6229decb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a09ac14325f729418ee88eb6229decb, type: 3}
 --- !u!1 &1459016029
@@ -10342,7 +10346,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1681570829
 Transform:
