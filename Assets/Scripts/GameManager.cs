@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int _insaneShots = 1;
     private bool _gameDone = false; // Flag to indicate if the game is over
     [SerializeField] private string _nextLevelSceneName; //name of the next level to be loaded
+    private float _levelStartTime;
 
     // For out of bounds checks
     [SerializeField] private BallManager _ballManager;
@@ -85,6 +86,8 @@ public class GameManager : MonoBehaviour
 
         _followCueBallCamera = _mainCamera.GetComponent<FollowCueBallCamera>();
         _followCueBallCamera.enabled = true;
+        // for hight score calculation
+        _levelStartTime = Time.time;
     }
 
     private void Update()
@@ -139,13 +142,44 @@ public class GameManager : MonoBehaviour
         if (_gameDone) return;
 
         Debug.Log("You won!");
+        // Calculate time spent on the level
+        float timeSpent = Time.time - _levelStartTime;
+        // Call the method to save high scores
+         bool newHighScore = LevelCompleted(timeSpent, _playerController.ShotsTaken, SceneManager.GetActiveScene().name);
 
         // Update game status
         _gameDone = true;
+        // Display next level text and activate next level button
+        _uiManager.NextLevel(_playerController.ShotsTaken, newHighScore);
+    }
+    // checking if highscores are beaten and saving them
+    bool LevelCompleted(float timeSpent, int shotsTaken, string levelName)
+    {
+        // flag if highscore is beaten
+        bool newHighScore = false;
+        // Create unique keys for time and shots high scores per level
+        string timeKey = levelName + "_TimeHighScore";
+        string shotsKey = levelName + "_ShotsHighScore";
 
-        //maybe if condition to play only this level for later
-        _uiManager.NextLevel(_playerController.ShotsTaken);
-        Invoke("LoadNextLevel", 4);  // Load next level in 4 sec
+        // Get the current high scores, default to infinity for time and shots
+        float currentTimeHighScore = PlayerPrefs.GetFloat(timeKey, float.MaxValue);
+        int currentShotsHighScore = PlayerPrefs.GetInt(shotsKey, int.MaxValue);
+
+        // If the player beat the high score, save the new high score
+        if (timeSpent < currentTimeHighScore)
+        {
+            PlayerPrefs.SetFloat(timeKey, timeSpent);
+            Debug.Log("New time high score for " + levelName + ": " + timeSpent);
+            newHighScore = true;
+        }
+
+        if (shotsTaken < currentShotsHighScore)
+        {
+            PlayerPrefs.SetInt(shotsKey, shotsTaken);
+            Debug.Log("New shots high score for " + levelName + ": " + shotsTaken);
+            newHighScore = true;
+        }
+        return newHighScore;
     }
 
     private void GameLost()
@@ -154,8 +188,8 @@ public class GameManager : MonoBehaviour
 
         // Update game status
         _gameDone = true;
-
-        _uiManager.GameOver(); // Display game over text
+        // Display game over text and activate restart button
+        _uiManager.GameOver(); 
     }
 
     private IEnumerator Sinking(GameObject eightball)
@@ -183,7 +217,7 @@ public class GameManager : MonoBehaviour
 
 
     // Method to load next level
-    private void LoadNextLevel()
+    public void LoadNextLevel()
     {
         // Load the next scene using SceneManager
         SceneManager.LoadScene(_nextLevelSceneName);

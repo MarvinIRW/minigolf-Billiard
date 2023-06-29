@@ -98,10 +98,15 @@ public class UIManager : MonoBehaviour
     }
 
     // Updates the status text when the next level is reached
-    public void NextLevel(int shotsTaken)
+    public void NextLevel(int shotsTaken, bool newHighScore)
     {
         _statusText.color = new Color(0.1f, 0f, 0.75f, 1);
         _statusText.text = shotsTaken == 1 ? "Amazing Job, hole-in-one!" : $"Nice Job, you took {shotsTaken} shots!";
+        if (newHighScore)
+        {
+            _statusText.text += "\nNew High Score!";
+        }
+        _gameOverWinButtons.SetActive(true);
     }
 
     // Updates the status text to Game Over when the game is lost
@@ -110,6 +115,9 @@ public class UIManager : MonoBehaviour
         _statusText.color = new Color(0.75f, 0.35f, 0.35f, 1);
         _statusText.text = "Game Over";
         _gameOverWinButtons.SetActive(true);
+        //deactivate child "NextLevelButton" of gameoverwinbuttons
+        _gameOverWinButtons.transform.Find("NextLevelButton").gameObject.SetActive(false);
+
     }
 
     // Updates the status text to "You won :)" when the game is won
