@@ -34,6 +34,12 @@ public class StartMenuManager : MonoBehaviour
         // Load the LevelSelectScene
         SceneManager.LoadScene("LevelSelectScene");
     }
+    // Function for Control Info
+    public void ControlInfo()
+    {
+        // Load the ControlInfoScene
+        SceneManager.LoadScene("ControlInfo");
+    }
 
     // Function for resettign the player prefs
     public void ResetPlayerPrefs()

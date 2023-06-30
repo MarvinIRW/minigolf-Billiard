@@ -7,7 +7,7 @@ using UnityEngine;
 /// 
 /// Keys:
 ///	wasd / arrows	- movement
-///	space/leftshift	- up/down (local space)
+///	alt/leftshift	- up/down (local space)
 ///	g/f 			- up/down (world space)
 ///	pageup/pagedown	- up/down (world space)
 ///	hold rightshift - enable fast movement mode
