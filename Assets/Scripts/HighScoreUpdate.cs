@@ -7,6 +7,8 @@ public class HighScoreUpdate : MonoBehaviour
 {
 
     private string _levelName;
+    // flag to determine if the level is selectable (beaten once before)
+    private bool _selectable = false;
     
     // Start is called before the first frame update
     void Start()
@@ -14,6 +16,7 @@ public class HighScoreUpdate : MonoBehaviour
         _levelName = gameObject.name;
         Debug.Log("Level name: " + _levelName);
         UpdateHighScores(_levelName);
+        DisableButton();
     }
 
     void UpdateHighScores(string levelName)
@@ -37,6 +40,8 @@ public class HighScoreUpdate : MonoBehaviour
         if (currentTimeHighScore != float.MaxValue)
         {
             timeHighScoreDisplay.text = "Time:  " + currentTimeHighScore +"s";
+            // if the time high score is not infinity, the level is selectable
+            _selectable = true;
         }
         else
         {
@@ -46,10 +51,22 @@ public class HighScoreUpdate : MonoBehaviour
         if (currentShotsHighScore != int.MaxValue)
         {
             shotsHighScoreDisplay.text = "Shots: " + currentShotsHighScore;
+            // if the shots high score is not infinity, the level is selectable
+            _selectable = true;
         }
         else
         {
             shotsHighScoreDisplay.text = "Shots: None";
+        }
+    }
+    // function to disable the level select button if the level is not selectable
+    private void DisableButton()
+    {
+        if (!_selectable)
+        {
+            gameObject.GetComponent<UnityEngine.UI.Button>().interactable = false;
+            //change color of button to grey
+            gameObject.GetComponent<UnityEngine.UI.Image>().color = new Color32(128, 128, 128, 255);
         }
     }
 }
