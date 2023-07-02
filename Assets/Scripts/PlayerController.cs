@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
             float rotationAngle = increasedRotationSpeed * Time.deltaTime;
 
             // Determine the rotation direction based on which key is pressed.
-            int rotationDirection = Input.GetKey(KeyCode.Q) ? 1 : -1;
+            int rotationDirection = Input.GetKey(KeyCode.Q) ? -1 : 1;
 
             // Rotate the aiming direction.
             _aimDirectionKey = Quaternion.Euler(0, rotationAngle * rotationDirection, 0) * _aimDirectionKey;

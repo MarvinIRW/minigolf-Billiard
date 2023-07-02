@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
         // Calculate time spent on the level
         float timeSpent = Time.time - _levelStartTime;
         // Call the method to save high scores
-         bool newHighScore = LevelCompleted(timeSpent, _playerController.ShotsTaken, SceneManager.GetActiveScene().name);
+        bool newHighScore = LevelCompleted(timeSpent, _playerController.ShotsTaken, SceneManager.GetActiveScene().name);
 
         // Update game status
         _gameDone = true;
@@ -160,23 +160,28 @@ public class GameManager : MonoBehaviour
         // Create unique keys for time and shots high scores per level
         string timeKey = levelName + "_TimeHighScore";
         string shotsKey = levelName + "_ShotsHighScore";
+        // get last two characters of level name as int for level index
+        int levelIndex = int.Parse(levelName.Substring(levelName.Length - 2));
 
         // Get the current high scores, default to infinity for time and shots
         float currentTimeHighScore = PlayerPrefs.GetFloat(timeKey, float.MaxValue);
         int currentShotsHighScore = PlayerPrefs.GetInt(shotsKey, int.MaxValue);
+        // Save the current level as unlocked if it is not already unlocked
+        if (levelIndex >= PlayerPrefs.GetInt("levelReached", 0))
+        {
+            PlayerPrefs.SetInt("levelReached", levelIndex+1);
+        }
 
         // If the player beat the high score, save the new high score
         if (timeSpent < currentTimeHighScore)
         {
             PlayerPrefs.SetFloat(timeKey, timeSpent);
-            Debug.Log("New time high score for " + levelName + ": " + timeSpent);
             newHighScore = true;
         }
 
         if (shotsTaken < currentShotsHighScore)
         {
             PlayerPrefs.SetInt(shotsKey, shotsTaken);
-            Debug.Log("New shots high score for " + levelName + ": " + shotsTaken);
             newHighScore = true;
         }
         return newHighScore;

@@ -16,7 +16,7 @@ public class StartMenuManager : MonoBehaviour
     public void GameStart()
     {
         // Load the next scene in the build index
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Level_00");
     }
 
     // Function to quit the game
